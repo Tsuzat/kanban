@@ -1,0 +1,13 @@
+export { default as Home } from 'lucide-svelte/icons/home';
+export { default as Sun } from 'lucide-svelte/icons/sun';
+export { default as Moon } from 'lucide-svelte/icons/moon';
+export { default as MonitorSmartPhone } from 'lucide-svelte/icons/monitor-smartphone';
+export { default as Plus } from 'lucide-svelte/icons/plus';
+export { default as CirclePlus } from 'lucide-svelte/icons/circle-plus';
+export { default as Delete } from 'lucide-svelte/icons/trash-2';
+export { default as Copy } from 'lucide-svelte/icons/copy';
+export { default as VerticalDots } from 'lucide-svelte/icons/ellipsis-vertical';
+export { default as FoldHorizontal } from 'lucide-svelte/icons/fold-horizontal';
+export { default as ClosePanel } from 'lucide-svelte/icons/panel-left-close';
+export { default as OpenPanel } from 'lucide-svelte/icons/panel-left-open';
+export { default as LoaderCircle } from 'lucide-svelte/icons/loader-circle';
