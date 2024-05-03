@@ -5,12 +5,11 @@
 	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
 
 	import { cn } from '$lib/utils';
-	import { Home, Plus, ClosePanel, OpenPanel } from '$lib/icons';
+	import { Plus, ClosePanel, OpenPanel, Menu, Cross } from '$lib/icons';
 
 	import { writable, type Writable } from 'svelte/store';
 	import ToggleTheme from './ToggleTheme.svelte';
 	import * as Avatar from '$lib/components/ui/avatar/index.js';
-	import type KanbanBoard from '$lib/types/KanbanBoard';
 	import NewProject from './NewProject.svelte';
 	import { KanBans } from '$lib/store';
 	import { page } from '$app/stores';
@@ -18,6 +17,9 @@
 	import { Folder } from 'lucide-svelte';
 
 	let isCollapsed: boolean;
+
+	// for mobile view
+	let mobile = false;
 
 	let open: Writable<boolean> = writable<boolean>(false);
 
@@ -34,8 +36,23 @@
 
 <NewProject {open} />
 
+<div class="mobile">
+	<Button
+		on:click={() => {
+			if (isCollapsed) isCollapsed = false;
+			mobile = !mobile;
+		}}
+		variant="outline"
+		size="icon"
+		class="m4"
+	>
+		<Menu class="size-4" aria-label="true" />
+	</Button>
+</div>
+
 <nav
 	data-collapsed={isCollapsed}
+	class:navmobile={mobile}
 	class="flex h-full flex-col justify-evenly bg-gray-200 p-5 transition-all dark:bg-black"
 >
 	<div
@@ -49,14 +66,18 @@
 			</Avatar.Root>
 		</a>
 		<ToggleTheme />
+
 		<Tooltip.Root openDelay={0}>
 			<Tooltip.Trigger asChild let:builder>
-				<Button builders={[builder]} variant="ghost" size="icon" on:click={togglePanel}>
-					{#if isCollapsed}
-						<OpenPanel class="size-4" aria-hidden="true" />
-					{:else}
-						<ClosePanel class="size-4" aria-hidden="true" />
-					{/if}
+				<Button
+					builders={[builder]}
+					variant="ghost"
+					size="icon"
+					data-collapsed={isCollapsed}
+					class="hidden transition-all data-[collapsed=true]:rotate-180 md:inline-flex md:items-center md:justify-center"
+					on:click={togglePanel}
+				>
+					<ClosePanel class="size-4" aria-hidden="true" />
 					<span class="sr-only"> {isCollapsed ? 'Open' : 'Close'} Panel </span>
 				</Button>
 			</Tooltip.Trigger>
@@ -64,6 +85,19 @@
 				>{isCollapsed ? 'Open' : 'Close'} Panel
 			</Tooltip.Content>
 		</Tooltip.Root>
+
+		<Button
+			variant="outline"
+			size="icon"
+			data-collapsed={isCollapsed}
+			class="md:hidden"
+			on:click={() => {
+				mobile = !mobile;
+			}}
+		>
+			<Cross class="size-4" aria-hidden="true" />
+			<span class="sr-only"> Close </span>
+		</Button>
 	</div>
 
 	<!-- {#if !isCollapsed}
@@ -125,16 +159,15 @@
 						variant="ghost"
 						size="sm"
 						class={cn('justify-start', {
-							'dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white':
-								$page.url.pathname === `/board/${board.id}`
+							'bg-muted hover:bg-muted': $page.url.pathname === `/board/${board.id}`
 						})}
 					>
 						<svelte:component
 							this={project_icons[board.icon] ?? Folder}
-							class="mr-4 size-4"
+							class="mr-4 size-5"
 							aria-hidden="true"
 						/>
-						{board.title}
+						<span class="w-full text-ellipsis">{board.title}</span>
 					</Button>
 				{/if}
 			{/each}
@@ -164,4 +197,27 @@
 </nav>
 
 <style>
+	.mobile {
+		scale: 0;
+		display: none;
+	}
+	@media (max-width: 768px) {
+		.mobile {
+			scale: 1;
+			position: absolute;
+			display: inline-flex;
+			top: 1rem;
+			left: 1rem;
+		}
+
+		nav {
+			position: fixed;
+			transform: translateX(-100%);
+		}
+
+		.navmobile {
+			z-index: 10;
+			transform: translateX(0%);
+		}
+	}
 </style>

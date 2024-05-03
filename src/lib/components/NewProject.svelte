@@ -11,6 +11,8 @@
 	import * as Select from '$lib/components/ui/select/index.js';
 	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
+	import type { ComponentType } from 'svelte';
+	import type { KanbanBoardType } from '$lib/types/types';
 
 	export let open: Writable<boolean>;
 
@@ -63,12 +65,8 @@
 		<div class="grid gap-4 py-4">
 			<div class="grid grid-cols-4 items-center gap-4">
 				<Label for="name" class="text-right">Title</Label>
-				<Input id="name" bind:value={title} class="col-span-3" />
+				<Input id="name" bind:value={title} class="col-span-3" required />
 			</div>
-			<!-- <div class="grid grid-cols-4 items-center gap-4">
-				<Label for="Icon" class="text-right">Icon</Label>
-				<Input id="Icon" type="text" bind:value={icon} class="col-span-3" />
-			</div> -->
 			<div class="grid grid-cols-4 items-center gap-4">
 				<Label for="Icon" class="text-right">Icon</Label>
 				<!-- <Input id="Icon" type="text" bind:value={icon} class="col-span-3" /> -->
@@ -82,7 +80,6 @@
 							<Select.Item
 								on:click={() => {
 									icon = icn;
-									console.log(icon);
 								}}
 								value={icn}
 								label={icn}
@@ -101,7 +98,8 @@
 					open.set(false);
 				}}>Cancel</Button
 			>
-			<Button type="submit" on:click={onSubmit}>Save changes</Button>
+			<Button type="submit" disabled={title.length === 0} on:click={onSubmit}>Create Project</Button
+			>
 		</Dialog.Footer>
 	</Dialog.Content>
 </Dialog.Root>
