@@ -11,3 +11,7 @@ export { default as FoldHorizontal } from 'lucide-svelte/icons/fold-horizontal';
 export { default as ClosePanel } from 'lucide-svelte/icons/panel-left-close';
 export { default as OpenPanel } from 'lucide-svelte/icons/panel-left-open';
 export { default as LoaderCircle } from 'lucide-svelte/icons/loader-circle';
+export { default as Menu } from 'lucide-svelte/icons/menu';
+export { default as Cross } from 'lucide-svelte/icons/x';
+export { default as Download } from 'lucide-svelte/icons/download';
+export { default as CalendarIcon } from 'lucide-svelte/icons/calendar-days';
