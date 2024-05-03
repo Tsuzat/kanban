@@ -37,6 +37,7 @@
 	"type": "module",
 	"dependencies": {
 		"@fontsource-variable/dm-sans": "^5.0.6",
+		"@internationalized/date": "^3.5.3",
 		"bits-ui": "^0.21.7",
 		"clsx": "^2.1.1",
 		"firebase": "^9.23.0",
