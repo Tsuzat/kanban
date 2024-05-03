@@ -1,38 +1,39 @@
 import { browser } from '$app/environment';
+import TasksSection from './TasksSection';
+import type { KanbanBoardType, TasksSectionType } from './types';
 
 export default class KanbanBoard {
 	title: string;
 	id: string;
 	icon: string;
+	sections: TasksSection[];
 
-	constructor(title: string, id: string, icon: string) {
+	constructor(title: string, id: string, icon: string, sections: TasksSection[] = []) {
 		this.title = title;
 		this.id = id;
 		this.icon = icon;
+		this.sections = sections;
 		this.saveLocally();
 	}
 
-	toJSON(): object {
+	toJSON(): KanbanBoardType {
 		return {
 			title: this.title,
+			icon: this.icon,
 			id: this.id,
-			icon: this.icon
+			sections: this.sections.map((section) => section.toJSON())
 		};
 	}
 
-	static fromJSON(data: object): KanbanBoard {
-		if (!data || typeof data !== 'object') {
+	static fromJSON(json: KanbanBoardType): KanbanBoard {
+		if (!json || typeof json !== 'object') {
 			throw new Error('Invalid data provided for KanbanBoard.fromJSON');
 		}
 
-		const { title, id, icon } = data as {
-			title: string;
-			id: string;
-			icon: string;
-			variant?: string;
-		};
-
-		return new KanbanBoard(title, id, icon); // Set default variant if missing
+		const sections = json.sections.map((sectionJson: object) =>
+			TasksSection.fromJSON(sectionJson as TasksSectionType)
+		);
+		return new KanbanBoard(json.title, json.id, json.icon, sections);
 	}
 
 	saveLocally() {
@@ -40,7 +41,8 @@ export default class KanbanBoard {
 	}
 
 	static getFromLocal(id: string) {
-		let tmp = localStorage.getItem(`kanban-board-${id}`);
+		if (!browser) return;
+		const tmp = localStorage.getItem(`kanban-board-${id}`);
 		if (tmp !== null) return KanbanBoard.fromJSON(JSON.parse(tmp));
 		return null;
 	}
