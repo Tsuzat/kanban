@@ -2,6 +2,7 @@ import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { cubicOut } from 'svelte/easing';
 import type { TransitionConfig } from 'svelte/transition';
+import { browser } from '$app/environment';
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -65,4 +66,18 @@ export const generateRandomId = (length: number): string => {
 	return randomString;
 };
 
+export const downloadAsJson = (data: object, filename: string) => {
+	if (!browser) return;
 
+	// Format JSON nicely with 2 spaces indentation
+	const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+	const anchorElement = document.createElement('a');
+	anchorElement.href = URL.createObjectURL(blob);
+	anchorElement.download = filename;
+	anchorElement.style.display = 'none'; // Hide the anchor element
+
+	document.body.appendChild(anchorElement);
+	anchorElement.click();
+
+	document.body.removeChild(anchorElement); // Cleanup after download
+};
