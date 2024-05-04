@@ -10,7 +10,11 @@
 		LoaderCircle,
 		Download,
 		Plus,
-		CalendarIcon
+		CalendarIcon,
+		ChevronsUp,
+		ChevronsDown,
+		ArrowUpAndDown,
+		ArrowLeftAndRight
 	} from '$lib/icons';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
@@ -88,6 +92,17 @@
 		kanban.set(newKanban);
 	}
 
+	function deleteSection() {
+		console.log(currentSectionContext?.title);
+		toast.success('Deleted Successfully.', {
+			description: `section "${currentSectionContext?.title}" has been deleted successfully.`,
+			action: {
+				label: 'Ok',
+				onClick: () => {}
+			}
+		});
+	}
+
 	function addTask(event: any) {
 		if (kanban === null) {
 			console.log('Kanban is null');
@@ -143,6 +158,50 @@
 		}
 		kanban.set(newKanban);
 	}
+
+	function moveTaskUp(task: Task, section: TasksSection) {
+		let newKanban = $kanban;
+		let idxTask = section.tasks.indexOf(task);
+		// return if not found or first element
+		if (idxTask <= 0) return;
+		const tmp = section.tasks[idxTask - 1];
+		section.tasks[idxTask - 1] = section.tasks[idxTask];
+		section.tasks[idxTask] = tmp;
+		newKanban.saveLocally();
+		kanban.set(newKanban);
+	}
+	function moveTaskDown(task: Task, section: TasksSection) {
+		let newKanban = $kanban;
+		let idxTask = section.tasks.indexOf(task);
+		// return if not found or is last element
+		if (idxTask < 0 || idxTask === section.tasks.length - 1) return;
+		const tmp = section.tasks[idxTask + 1];
+		section.tasks[idxTask + 1] = section.tasks[idxTask];
+		section.tasks[idxTask] = tmp;
+		newKanban.saveLocally();
+		kanban.set(newKanban);
+	}
+
+	function moveTaskToSection(task: Task, fromSection: TasksSection, toSection: TasksSection) {
+		let newKanban = $kanban;
+		// get the index of Task
+		let idx = fromSection.tasks.indexOf(task);
+		if (idx < 0) return;
+		// delete if from fromSection
+		fromSection.tasks.splice(idx, 1);
+		// Push it to toSection
+		toSection.tasks.push(task);
+		// save locally
+		newKanban.saveLocally();
+		kanban.set(newKanban);
+		toast.success('Task moves successfully', {
+			description: `Task ${task.title} has been moves from ${fromSection.title} to ${toSection.title}`,
+			action: {
+				label: 'Ok',
+				onClick: () => {}
+			}
+		});
+	}
 </script>
 
 <AlertDialog.Root bind:open>
@@ -172,7 +231,7 @@
 <NewTask open={addNewTask} on:callback={addTask} />
 
 {#if kanban !== null}
-	<div class="m-2 max-h-full w-full p-2">
+	<div class="m-2 max-h-full w-full overflow-y-auto overflow-x-hidden p-2">
 		<div class="topbar flex items-center justify-between">
 			<h1 class="text-xl font-bold">
 				{$kanban.title}
@@ -213,6 +272,30 @@
 								<Download class="mr-2 size-4" />
 								<span>Download as JSON</span>
 							</DropdownMenu.Item>
+							<DropdownMenu.Sub>
+								<DropdownMenu.SubTrigger
+									class="text-red-600 data-[highlighted]:bg-red-600 data-[highlighted]:text-foreground"
+								>
+									<Delete class="mr-2 h-4 w-4" />
+									<span>Delete Section</span>
+								</DropdownMenu.SubTrigger>
+								<DropdownMenu.SubContent>
+									{#each $kanban.sections as section}
+										<DropdownMenu.Item
+											on:click={() => {
+												continueText = 'Delete Anyway';
+												alertDescription = `${section.title} will be deleted. This action is irreversible and data will be lost permanently. Do you still want to continue?`;
+												isDestructive = true;
+												currentSectionContext = section;
+												onClick = deleteSection;
+												open = true;
+											}}
+										>
+											<span>{section.title}</span>
+										</DropdownMenu.Item>
+									{/each}
+								</DropdownMenu.SubContent>
+							</DropdownMenu.Sub>
 							<DropdownMenu.Item
 								on:click={() => {
 									continueText = 'Delete Anyway';
@@ -249,7 +332,7 @@
 					</div>
 					<div class="tasks">
 						{#each section.tasks as task, idx (idx)}
-							<Card.Root class="transition-all">
+							<Card.Root class="my-2 cursor-pointer transition-all hover:scale-[1.01]">
 								<Card.Header>
 									<div class="card-top flex items-center justify-between">
 										<div
@@ -265,10 +348,57 @@
 											</DropdownMenu.Trigger>
 											<DropdownMenu.Content class="w-44">
 												<DropdownMenu.Group>
-													<DropdownMenu.Item on:click={() => {}}>
+													<DropdownMenu.Item
+														on:click={() => {
+															downloadAsJson(task, task.title);
+														}}
+													>
 														<Download class="mr-2 size-4" />
-														<span>Move Internally</span>
+														<span>Download as JSON</span>
 													</DropdownMenu.Item>
+													<DropdownMenu.Sub>
+														<DropdownMenu.SubTrigger>
+															<ArrowUpAndDown class="mr-2 h-4 w-4" />
+															<span>Move Internally</span>
+														</DropdownMenu.SubTrigger>
+														<DropdownMenu.SubContent>
+															<DropdownMenu.Item
+																on:click={() => {
+																	moveTaskUp(task, section);
+																}}
+															>
+																<ChevronsUp class="mr-2 size-4" />
+																<span>Move Up</span>
+															</DropdownMenu.Item>
+															<DropdownMenu.Item
+																on:click={() => {
+																	moveTaskDown(task, section);
+																}}
+															>
+																<ChevronsDown class="mr-2 size-4" />
+																<span>Move Down</span>
+															</DropdownMenu.Item>
+														</DropdownMenu.SubContent>
+													</DropdownMenu.Sub>
+													<DropdownMenu.Sub>
+														<DropdownMenu.SubTrigger>
+															<ArrowLeftAndRight class="mr-2 h-4 w-4" />
+															<span>Move to section</span>
+														</DropdownMenu.SubTrigger>
+														<DropdownMenu.SubContent>
+															{#each $kanban.sections as sec}
+																{#if sec !== section}
+																	<DropdownMenu.Item
+																		on:click={() => {
+																			moveTaskToSection(task, section, sec);
+																		}}
+																	>
+																		<span>{sec.title}</span>
+																	</DropdownMenu.Item>
+																{/if}
+															{/each}
+														</DropdownMenu.SubContent>
+													</DropdownMenu.Sub>
 													<DropdownMenu.Item
 														on:click={() => {
 															alertDescription =
