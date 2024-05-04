@@ -124,7 +124,9 @@
 			dueDate: string;
 			priority: TaskPriority;
 		};
+		console.log(title, description, dueDate, priority);
 		let tmpTask = new Task(title, description, dueDate, priority);
+		console.log('Task Created', tmpTask);
 		if (currentSectionContext === null) {
 			console.log(currentSectionContext);
 			return;
@@ -456,7 +458,7 @@
 										</div>
 									</Card.Title>
 									<Card.Description>
-										<span>Deploy your new project in one-click.</span>
+										<span>{task.description}</span>
 										<div class="duedate mt-4 flex items-center">
 											<CalendarIcon class="mr-4 size-4 text-foreground" aria-label="true" />
 											<span class="text-sm">{task.dueDate}</span>

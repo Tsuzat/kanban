@@ -75,7 +75,7 @@
 				</Popover.Root>
 			</div>
 			<div class="grid grid-cols-4 items-center gap-4">
-				<Label for="priority" class="0 text-right">Description</Label>
+				<Label for="priority" class="0 text-right">Priority</Label>
 				<Select.Root>
 					<Select.Trigger class="w-[10rem]">
 						<Select.Value placeholder={priority} />
