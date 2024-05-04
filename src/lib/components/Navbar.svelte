@@ -5,16 +5,16 @@
 	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
 
 	import { cn } from '$lib/utils';
-	import { Plus, ClosePanel, OpenPanel, Menu, Cross } from '$lib/icons';
+	import { Plus, ClosePanel, Menu, Cross } from '$lib/icons';
 
 	import { writable, type Writable } from 'svelte/store';
 	import ToggleTheme from './ToggleTheme.svelte';
-	import * as Avatar from '$lib/components/ui/avatar/index.js';
 	import NewProject from './NewProject.svelte';
 	import { KanBans } from '$lib/store';
 	import { page } from '$app/stores';
 	import { project_icons } from '$lib/project_icons';
 	import { Folder } from 'lucide-svelte';
+	import Logo from './Logo.svelte';
 
 	let isCollapsed: boolean;
 
@@ -59,12 +59,7 @@
 		data-collapsed={isCollapsed}
 		class="flex items-center justify-between data-[collapsed=true]:flex-col data-[collapsed=true]:space-y-2"
 	>
-		<a href="/">
-			<Avatar.Root>
-				<Avatar.Image src="https://github.com/shadcn.png" alt="@shadcn" />
-				<Avatar.Fallback>CN</Avatar.Fallback>
-			</Avatar.Root>
-		</a>
+		<Logo />
 		<ToggleTheme />
 
 		<Tooltip.Root openDelay={0}>
@@ -99,23 +94,6 @@
 			<span class="sr-only"> Close </span>
 		</Button>
 	</div>
-
-	<!-- {#if !isCollapsed}
-		<Button href={`/`} variant="ghost" size="sm" class="my-2 justify-start hover:bg-muted">
-			<Home class="mr-4 size-4" />
-			<span>Home</span>
-		</Button>
-	{:else}
-		<Tooltip.Root openDelay={0}>
-			<Tooltip.Trigger asChild let:builder>
-				<Button builders={[builder]} href="/" variant="ghost" size="icon">
-					<Home class="size-4" aria-hidden="true" />
-					<span class="sr-only"> Home Page </span>
-				</Button>
-			</Tooltip.Trigger>
-			<Tooltip.Content side="right" class="item-center flex gap-4">Home Page</Tooltip.Content>
-		</Tooltip.Root>
-	{/if} -->
 
 	{#if !isCollapsed}
 		<div class="mb-2 mt-4 text-sm text-muted-foreground">My Projects</div>
