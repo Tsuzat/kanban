@@ -10,6 +10,9 @@
 		<div><Logo /></div>
 		<div class="ml-4 text-xl">KanBan</div>
 	</div>
+	{#if $KanBans.length === 0}
+		<center>There is not Kanban. Please create one.</center>
+	{/if}
 	<div class="grid-container mt-4">
 		{#each $KanBans as kanban}
 			<div class="grid-item">
