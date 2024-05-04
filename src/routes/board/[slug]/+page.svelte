@@ -19,7 +19,7 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import * as Card from '$lib/components/ui/card';
-	import { cn, downloadAsJson } from '$lib/utils';
+	import { cn, downloadAsJson, totalTasksInKanban } from '$lib/utils';
 	import { KanBans } from '$lib/store';
 	import { goto } from '$app/navigation';
 	import { toast } from 'svelte-sonner';
@@ -59,6 +59,7 @@
 	}
 
 	$: kanban = data.kanban;
+	$: totalTasks = totalTasksInKanban($kanban);
 
 	function deleteKanban() {
 		// Delete the Kanban
@@ -204,6 +205,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>{$kanban.title}</title>
+</svelte:head>
+
 <AlertDialog.Root bind:open>
 	<AlertDialog.Content>
 		<AlertDialog.Header>
@@ -233,9 +238,9 @@
 {#if kanban !== null}
 	<div class="m-2 max-h-full w-full overflow-y-auto overflow-x-hidden p-2">
 		<div class="topbar flex items-center justify-between">
-			<h1 class="text-xl font-bold">
+			<h1 class="text-2xl font-bold">
 				{$kanban.title}
-				<span class="text-sm text-muted-foreground">12</span>
+				<span class="text-xl text-muted-foreground">{totalTasks}</span>
 			</h1>
 			<div class="actions">
 				<Button

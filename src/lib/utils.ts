@@ -3,6 +3,7 @@ import { twMerge } from 'tailwind-merge';
 import { cubicOut } from 'svelte/easing';
 import type { TransitionConfig } from 'svelte/transition';
 import { browser } from '$app/environment';
+import type KanbanBoard from './types/KanbanBoard';
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -80,4 +81,12 @@ export const downloadAsJson = (data: object, filename: string) => {
 	anchorElement.click();
 
 	document.body.removeChild(anchorElement); // Cleanup after download
+};
+
+export const totalTasksInKanban = (kanban: KanbanBoard): number => {
+	let totalTasks = 0;
+	for (const sec of kanban.sections) {
+		totalTasks += sec.tasks.length;
+	}
+	return totalTasks;
 };
