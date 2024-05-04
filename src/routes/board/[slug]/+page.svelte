@@ -29,12 +29,14 @@
 	import NewTask from '$lib/components/NewTask.svelte';
 	import type { TaskPriority } from '$lib/types/types';
 	import Task from '$lib/types/Task';
+	import * as Drawer from '$lib/components/ui/drawer';
 
 	export let data: PageData;
 
 	let open = false;
 	let addNewSection = writable<boolean>(false);
 	let addNewTask = writable<boolean>(false);
+	let openTask = writable<boolean>(false);
 
 	let alertTitle = 'Are you sure';
 	let alertDescription =
@@ -88,13 +90,20 @@
 		let newTasksSection: TasksSection = new TasksSection(title, color);
 		let newKanban = $kanban;
 		newKanban.sections.push(newTasksSection);
-		console.log($kanban);
 		newKanban.saveLocally();
 		kanban.set(newKanban);
 	}
 
 	function deleteSection() {
-		console.log(currentSectionContext?.title);
+		let newKanban = $kanban;
+		let newSections = [];
+		for (let section of newKanban.sections) {
+			if (section === currentSectionContext) continue;
+			newSections.push(section);
+		}
+		newKanban.sections = newSections;
+		newKanban.saveLocally();
+		kanban.set(newKanban);
 		toast.success('Deleted Successfully.', {
 			description: `section "${currentSectionContext?.title}" has been deleted successfully.`,
 			action: {
@@ -128,7 +137,6 @@
 				break;
 			}
 		}
-		console.log(newKanban);
 		newKanban.saveLocally();
 		kanban.set(newKanban);
 	}
@@ -157,6 +165,7 @@
 				s.tasks = newTasks;
 			}
 		}
+		newKanban.saveLocally();
 		kanban.set(newKanban);
 	}
 
@@ -234,6 +243,19 @@
 
 <NewSection open={addNewSection} on:callback={addSection} />
 <NewTask open={addNewTask} on:callback={addTask} />
+
+<Drawer.Root bind:open={$openTask}>
+	<Drawer.Content>
+		<Drawer.Header>
+			<Drawer.Title>Are you sure absolutely sure?</Drawer.Title>
+			<Drawer.Description>This action cannot be undone.</Drawer.Description>
+		</Drawer.Header>
+		<Drawer.Footer>
+			<Button>Submit</Button>
+			<Drawer.Close>Cancel</Drawer.Close>
+		</Drawer.Footer>
+	</Drawer.Content>
+</Drawer.Root>
 
 {#if kanban !== null}
 	<div class="m-2 max-h-full w-full overflow-y-auto overflow-x-hidden p-2">
@@ -337,7 +359,12 @@
 					</div>
 					<div class="tasks">
 						{#each section.tasks as task, idx (idx)}
-							<Card.Root class="my-2 cursor-pointer transition-all hover:scale-[1.01]">
+							<Card.Root
+								on:click={() => {
+									openTask.set(true);
+								}}
+								class="my-2 cursor-pointer transition-all hover:scale-[1.01]"
+							>
 								<Card.Header>
 									<div class="card-top flex items-center justify-between">
 										<div
@@ -424,7 +451,15 @@
 											</DropdownMenu.Content>
 										</DropdownMenu.Root>
 									</div>
-									<Card.Title>{task.title}</Card.Title>
+									<Card.Title>
+										<div class="inline-flex items-center">
+											<div>{task.title}</div>
+											<div
+												style={`background-color: #${section.statusColor};`}
+												class="ml-2 size-2 rounded-full"
+											></div>
+										</div>
+									</Card.Title>
 									<Card.Description>
 										<span>Deploy your new project in one-click.</span>
 										<div class="duedate mt-4 flex items-center">
