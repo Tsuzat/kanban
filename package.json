@@ -48,6 +48,7 @@
 		"svelte-sonner": "^0.3.22",
 		"sveltefire": "^0.4.5",
 		"tailwind-merge": "^2.3.0",
-		"tailwind-variants": "^0.2.1"
+		"tailwind-variants": "^0.2.1",
+		"vaul-svelte": "^0.3.0"
 	}
 }
