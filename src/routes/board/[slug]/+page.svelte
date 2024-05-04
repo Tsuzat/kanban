@@ -359,12 +359,7 @@
 					</div>
 					<div class="tasks">
 						{#each section.tasks as task, idx (idx)}
-							<Card.Root
-								on:click={() => {
-									openTask.set(true);
-								}}
-								class="my-2 cursor-pointer transition-all hover:scale-[1.01]"
-							>
+							<Card.Root class="my-2 cursor-pointer transition-all hover:scale-[1.01]">
 								<Card.Header>
 									<div class="card-top flex items-center justify-between">
 										<div
