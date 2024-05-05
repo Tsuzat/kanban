@@ -4,8 +4,6 @@
 	import '../app.pcss';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import { Toaster } from '$lib/components/ui/sonner';
-	import { Menu } from '$lib/icons';
-	import { Button } from '$lib/components/ui/button';
 </script>
 
 <svelte:head>
