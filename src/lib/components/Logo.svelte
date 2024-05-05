@@ -4,7 +4,8 @@
 <a class="logo flex items-center" href="/">
 	<div class="relative size-10">
 		<div class="rect"></div>
-		<div class="rect blur-rect z-10"></div>
+		<div class="rect blur-rect"></div>
+		<div class="beta absolute z-[2] text-[0.5rem]">BETA</div>
 	</div>
 </a>
 
