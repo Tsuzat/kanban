@@ -2,6 +2,9 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import type { PageData } from './$types';
 	import KanbanBoard from '$lib/types/KanbanBoard';
+	import { flip } from 'svelte/animate';
+	import { dndzone } from 'svelte-dnd-action';
+	let flipDurationMs = 200;
 
 	import {
 		CirclePlus,
@@ -19,7 +22,7 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import * as Card from '$lib/components/ui/card';
-	import { cn, downloadAsJson, totalTasksInKanban } from '$lib/utils';
+	import { cn, downloadAsJson, generateRandomId, totalTasksInKanban } from '$lib/utils';
 	import { KanBans } from '$lib/store';
 	import { goto } from '$app/navigation';
 	import { toast } from 'svelte-sonner';
@@ -30,6 +33,8 @@
 	import type { TaskPriority } from '$lib/types/types';
 	import Task from '$lib/types/Task';
 	import * as Drawer from '$lib/components/ui/drawer';
+	import { Kanban } from 'lucide-svelte';
+	import Alert from '$lib/components/Alert.svelte';
 
 	export let data: PageData;
 
@@ -87,7 +92,18 @@
 	function addSection(event: any) {
 		if (kanban === null) return;
 		let { title, color } = event.detail as { title: string; color: string };
-		let newTasksSection: TasksSection = new TasksSection(title, color);
+		// generate the new id that sections already do not have
+		// get all the ids first
+		let ids: string[] = [];
+		for (let section of $kanban.sections) {
+			ids.push(section.id);
+		}
+		let newId: string = generateRandomId();
+		// Generate Random IDs untill we have the unique one for section
+		while (ids.includes(newId)) {
+			newId = generateRandomId();
+		}
+		let newTasksSection: TasksSection = new TasksSection(newId, title, color);
 		let newKanban = $kanban;
 		newKanban.sections.push(newTasksSection);
 		newKanban.saveLocally();
@@ -124,11 +140,19 @@
 			dueDate: string;
 			priority: TaskPriority;
 		};
-		console.log(title, description, dueDate, priority);
-		let tmpTask = new Task(title, description, dueDate, priority);
-		console.log('Task Created', tmpTask);
+		// get all the ids from all the tasks
+		let tasksIds: string[] = [];
+		for (let section of $kanban.sections) {
+			for (let task of section.tasks) {
+				tasksIds.push(task.id);
+			}
+		}
+		let newId = generateRandomId();
+		while (tasksIds.includes(newId)) {
+			newId = generateRandomId();
+		}
+		let tmpTask = new Task(newId, title, description, dueDate, priority);
 		if (currentSectionContext === null) {
-			console.log(currentSectionContext);
 			return;
 		}
 		// loop through all th elements in kanban
@@ -213,6 +237,31 @@
 				onClick: () => {}
 			}
 		});
+	}
+
+	// function handleDnDConsiderSection(e) {
+	// 	$kanban.sections = e.detail.items;
+	// 	$kanban.saveLocally();
+	// 	kanban.set($kanban);
+	// }
+
+	// function handleDnDFinalizeSection(e) {
+	// 	$kanban.sections = e.detail.items;
+	// 	$kanban.saveLocally();
+	// 	kanban.set($kanban);
+	// }
+
+	function handleDndConsiderTasks(cid, e) {
+		const colIdx = $kanban.sections.findIndex((c) => c.id === cid);
+		$kanban.sections[colIdx].tasks = e.detail.items;
+		$kanban.saveLocally();
+		kanban.set($kanban);
+	}
+	function handleDndFinalizeTasks(cid, e) {
+		const colIdx = $kanban.sections.findIndex((c) => c.id === cid);
+		$kanban.sections[colIdx].tasks = e.detail.items;
+		$kanban.saveLocally();
+		kanban.set($kanban);
 	}
 </script>
 
@@ -343,9 +392,9 @@
 			</div>
 		</div>
 		<div class="grid-container mt-4">
-			{#each $kanban.sections as section, idx (idx)}
-				<div class="grid-item rounded">
-					<div class="top flex items-center justify-between">
+			{#each $kanban.sections as section (section.id)}
+				<div class="grid-item rounded" animate:flip={{ duration: flipDurationMs }}>
+					<div class="top mb-4 flex items-center justify-between">
 						<span class="text-sm font-bold">{section.title}</span>
 						<Button
 							variant="ghost"
@@ -359,8 +408,13 @@
 							<Plus class="size-4" aria-label="true" />
 						</Button>
 					</div>
-					<div class="tasks">
-						{#each section.tasks as task, idx (idx)}
+					<div
+						class="tasks min-h-[10rem]"
+						use:dndzone={{ items: section.tasks, flipDurationMs }}
+						on:consider={(e) => handleDndConsiderTasks(section.id, e)}
+						on:finalize={(e) => handleDndFinalizeTasks(section.id, e)}
+					>
+						{#each section.tasks as task (task.id)}
 							<Card.Root class="my-2 cursor-pointer transition-all hover:scale-[1.01]">
 								<Card.Header>
 									<div class="card-top flex items-center justify-between">

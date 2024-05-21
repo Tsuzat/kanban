@@ -44,6 +44,7 @@
 		"lucide-svelte": "^0.376.1",
 		"mode-watcher": "^0.3.0",
 		"paneforge": "^0.0.4",
+		"svelte-dnd-action": "^0.9.47",
 		"svelte-radix": "^1.1.0",
 		"svelte-sonner": "^0.3.22",
 		"sveltefire": "^0.4.5",
