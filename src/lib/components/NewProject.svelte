@@ -42,7 +42,7 @@
 				break;
 			}
 		}
-		let newKanban: KanbanBoard = new KanbanBoard(title, id, icon);
+		let newKanban: KanbanBoard = new KanbanBoard(id, title, icon);
 		// Add this to Kanbans
 		let kanbans = $KanBans;
 		kanbans.push(newKanban);
