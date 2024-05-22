@@ -22,7 +22,13 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import * as Card from '$lib/components/ui/card';
-	import { cn, downloadAsJson, generateRandomId, totalTasksInKanban } from '$lib/utils';
+	import {
+		cn,
+		downloadAsJson,
+		generateRandomId,
+		modifyColorBasedOnTheme,
+		totalTasksInKanban
+	} from '$lib/utils';
 	import { KanBans } from '$lib/store';
 	import { goto } from '$app/navigation';
 	import { toast } from 'svelte-sonner';
@@ -33,8 +39,7 @@
 	import type { TaskPriority } from '$lib/types/types';
 	import Task from '$lib/types/Task';
 	import * as Drawer from '$lib/components/ui/drawer';
-	import { Kanban } from 'lucide-svelte';
-	import Alert from '$lib/components/Alert.svelte';
+	import { mode } from 'mode-watcher';
 
 	export let data: PageData;
 
@@ -230,13 +235,6 @@
 		// save locally
 		newKanban.saveLocally();
 		kanban.set(newKanban);
-		toast.success('Task moves successfully', {
-			description: `Task ${task.title} has been moves from ${fromSection.title} to ${toSection.title}`,
-			action: {
-				label: 'Ok',
-				onClick: () => {}
-			}
-		});
 	}
 
 	// function handleDnDConsiderSection(e) {
@@ -251,17 +249,23 @@
 	// 	kanban.set($kanban);
 	// }
 
-	function handleDndConsiderTasks(cid, e) {
+	function handleDndConsiderTasks(cid: string, e: any) {
+		console.log(typeof e);
 		const colIdx = $kanban.sections.findIndex((c) => c.id === cid);
 		$kanban.sections[colIdx].tasks = e.detail.items;
 		$kanban.saveLocally();
 		kanban.set($kanban);
 	}
-	function handleDndFinalizeTasks(cid, e) {
+	function handleDndFinalizeTasks(cid: string, e: any) {
+		console.log(typeof e);
 		const colIdx = $kanban.sections.findIndex((c) => c.id === cid);
 		$kanban.sections[colIdx].tasks = e.detail.items;
 		$kanban.saveLocally();
 		kanban.set($kanban);
+	}
+
+	function transformDraggedElement(draggedEl: HTMLElement, data: any, index: any) {
+		draggedEl.style.opacity = '0.5';
 	}
 </script>
 
@@ -393,7 +397,7 @@
 		</div>
 		<div class="grid-container mt-4">
 			{#each $kanban.sections as section (section.id)}
-				<div class="grid-item rounded" animate:flip={{ duration: flipDurationMs }}>
+				<div class="grid-item rounded">
 					<div class="top mb-4 flex items-center justify-between">
 						<span class="text-sm font-bold">{section.title}</span>
 						<Button
@@ -409,117 +413,128 @@
 						</Button>
 					</div>
 					<div
-						class="tasks min-h-[10rem]"
-						use:dndzone={{ items: section.tasks, flipDurationMs }}
+						class="tasks min-h-[12rem] rounded-md p-2"
+						style={`background-color: #${section.statusColor + '20'}`}
+						use:dndzone={{
+							items: section.tasks,
+							flipDurationMs,
+							transformDraggedElement,
+							dropTargetStyle: {
+								outline: `#${section.statusColor + '80'} dashed 1px`,
+								borderRadius: '5px'
+							}
+						}}
 						on:consider={(e) => handleDndConsiderTasks(section.id, e)}
 						on:finalize={(e) => handleDndFinalizeTasks(section.id, e)}
 					>
 						{#each section.tasks as task (task.id)}
-							<Card.Root class="my-2 cursor-pointer transition-all hover:scale-[1.01]">
-								<Card.Header>
-									<div class="card-top flex items-center justify-between">
-										<div
-											class={`tag ${task.priority} rounded-lg p-1 text-[0.6rem] font-bold text-white`}
-										>
-											{task.priority}
-										</div>
-										<DropdownMenu.Root>
-											<DropdownMenu.Trigger asChild let:builder>
-												<Button builders={[builder]} variant="ghost" size="icon">
-													<VerticalDots class="size-4" aria-hidden="true" />
-												</Button>
-											</DropdownMenu.Trigger>
-											<DropdownMenu.Content class="w-44">
-												<DropdownMenu.Group>
-													<DropdownMenu.Item
-														on:click={() => {
-															downloadAsJson(task, task.title);
-														}}
-													>
-														<Download class="mr-2 size-4" />
-														<span>Download as JSON</span>
-													</DropdownMenu.Item>
-													<DropdownMenu.Sub>
-														<DropdownMenu.SubTrigger>
-															<ArrowUpAndDown class="mr-2 h-4 w-4" />
-															<span>Move Internally</span>
-														</DropdownMenu.SubTrigger>
-														<DropdownMenu.SubContent>
-															<DropdownMenu.Item
-																on:click={() => {
-																	moveTaskUp(task, section);
-																}}
-															>
-																<ChevronsUp class="mr-2 size-4" />
-																<span>Move Up</span>
-															</DropdownMenu.Item>
-															<DropdownMenu.Item
-																on:click={() => {
-																	moveTaskDown(task, section);
-																}}
-															>
-																<ChevronsDown class="mr-2 size-4" />
-																<span>Move Down</span>
-															</DropdownMenu.Item>
-														</DropdownMenu.SubContent>
-													</DropdownMenu.Sub>
-													<DropdownMenu.Sub>
-														<DropdownMenu.SubTrigger>
-															<ArrowLeftAndRight class="mr-2 h-4 w-4" />
-															<span>Move to section</span>
-														</DropdownMenu.SubTrigger>
-														<DropdownMenu.SubContent>
-															{#each $kanban.sections as sec}
-																{#if sec !== section}
-																	<DropdownMenu.Item
-																		on:click={() => {
-																			moveTaskToSection(task, section, sec);
-																		}}
-																	>
-																		<span>{sec.title}</span>
-																	</DropdownMenu.Item>
-																{/if}
-															{/each}
-														</DropdownMenu.SubContent>
-													</DropdownMenu.Sub>
-													<DropdownMenu.Item
-														on:click={() => {
-															alertDescription =
-																'Deleting this Task will not be reversible. Do you still want to delete this?';
-															continueText = 'Delete Anyway';
-															isDestructive = true;
-															onClick = () => {
-																deleteTask(task, section);
-															};
-															open = true;
-														}}
-														class="text-red-600 data-[highlighted]:bg-red-600 data-[highlighted]:text-foreground"
-													>
-														<Delete class="mr-2 size-4 " />
-														<span>Delete</span>
-													</DropdownMenu.Item>
-												</DropdownMenu.Group>
-											</DropdownMenu.Content>
-										</DropdownMenu.Root>
-									</div>
-									<Card.Title>
-										<div class="inline-flex items-center">
-											<div>{task.title}</div>
+							<div animate:flip={{ duration: flipDurationMs }} class="outline-none">
+								<Card.Root class="my-2 cursor-pointer transition-all hover:scale-[1.01]">
+									<Card.Header>
+										<div class="card-top flex items-center justify-between">
 											<div
-												style={`background-color: #${section.statusColor};`}
-												class="ml-2 size-2 rounded-full"
-											></div>
+												class={`tag ${task.priority} rounded-lg p-1 text-[0.6rem] font-bold text-white`}
+											>
+												{task.priority}
+											</div>
+											<DropdownMenu.Root>
+												<DropdownMenu.Trigger asChild let:builder>
+													<Button builders={[builder]} variant="ghost" size="icon">
+														<VerticalDots class="size-4" aria-hidden="true" />
+													</Button>
+												</DropdownMenu.Trigger>
+												<DropdownMenu.Content class="w-44">
+													<DropdownMenu.Group>
+														<DropdownMenu.Item
+															on:click={() => {
+																downloadAsJson(task, task.title);
+															}}
+														>
+															<Download class="mr-2 size-4" />
+															<span>Download as JSON</span>
+														</DropdownMenu.Item>
+														<DropdownMenu.Sub>
+															<DropdownMenu.SubTrigger>
+																<ArrowUpAndDown class="mr-2 h-4 w-4" />
+																<span>Move Internally</span>
+															</DropdownMenu.SubTrigger>
+															<DropdownMenu.SubContent>
+																<DropdownMenu.Item
+																	on:click={() => {
+																		moveTaskUp(task, section);
+																	}}
+																>
+																	<ChevronsUp class="mr-2 size-4" />
+																	<span>Move Up</span>
+																</DropdownMenu.Item>
+																<DropdownMenu.Item
+																	on:click={() => {
+																		moveTaskDown(task, section);
+																	}}
+																>
+																	<ChevronsDown class="mr-2 size-4" />
+																	<span>Move Down</span>
+																</DropdownMenu.Item>
+															</DropdownMenu.SubContent>
+														</DropdownMenu.Sub>
+														<DropdownMenu.Sub>
+															<DropdownMenu.SubTrigger>
+																<ArrowLeftAndRight class="mr-2 h-4 w-4" />
+																<span>Move to section</span>
+															</DropdownMenu.SubTrigger>
+															<DropdownMenu.SubContent>
+																{#each $kanban.sections as sec}
+																	{#if sec !== section}
+																		<DropdownMenu.Item
+																			on:click={() => {
+																				moveTaskToSection(task, section, sec);
+																			}}
+																		>
+																			<span>{sec.title}</span>
+																		</DropdownMenu.Item>
+																	{/if}
+																{/each}
+															</DropdownMenu.SubContent>
+														</DropdownMenu.Sub>
+														<DropdownMenu.Item
+															on:click={() => {
+																alertDescription =
+																	'Deleting this Task will not be reversible. Do you still want to delete this?';
+																continueText = 'Delete Anyway';
+																isDestructive = true;
+																onClick = () => {
+																	deleteTask(task, section);
+																};
+																open = true;
+															}}
+															class="text-red-600 data-[highlighted]:bg-red-600 data-[highlighted]:text-foreground"
+														>
+															<Delete class="mr-2 size-4 " />
+															<span>Delete</span>
+														</DropdownMenu.Item>
+													</DropdownMenu.Group>
+												</DropdownMenu.Content>
+											</DropdownMenu.Root>
 										</div>
-									</Card.Title>
-									<Card.Description>
-										<span>{task.description}</span>
-										<div class="duedate mt-4 flex items-center">
-											<CalendarIcon class="mr-4 size-4 text-foreground" aria-label="true" />
-											<span class="text-sm">{task.dueDate}</span>
-										</div>
-									</Card.Description>
-								</Card.Header>
-							</Card.Root>
+										<Card.Title>
+											<div class="inline-flex items-center">
+												<div>{task.title}</div>
+												<div
+													style={`background-color: #${section.statusColor};`}
+													class="ml-2 size-2 rounded-full"
+												></div>
+											</div>
+										</Card.Title>
+										<Card.Description>
+											<span>{task.description}</span>
+											<div class="duedate mt-4 flex items-center">
+												<CalendarIcon class="mr-4 size-4 text-foreground" aria-label="true" />
+												<span class="text-sm">{task.dueDate}</span>
+											</div>
+										</Card.Description>
+									</Card.Header>
+								</Card.Root>
+							</div>
 						{/each}
 					</div>
 				</div>
