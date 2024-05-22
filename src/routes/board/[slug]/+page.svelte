@@ -4,8 +4,6 @@
 	import KanbanBoard from '$lib/types/KanbanBoard';
 	import { flip } from 'svelte/animate';
 	import { dndzone } from 'svelte-dnd-action';
-	let flipDurationMs = 200;
-
 	import {
 		CirclePlus,
 		VerticalDots,
@@ -33,6 +31,11 @@
 	import type { TaskPriority } from '$lib/types/types';
 	import Task from '$lib/types/Task';
 	import * as Drawer from '$lib/components/ui/drawer';
+	import { DeviceIsMobile } from '$lib/isMobile';
+	import { onMount } from 'svelte';
+
+	let flipDurationMs = 200;
+	let dragDisabled = DeviceIsMobile();
 
 	export let data: PageData;
 
@@ -53,6 +56,20 @@
 	 * which can be usefull when creating a new task
 	 * */
 	let currentSectionContext: TasksSection | null = null;
+
+	onMount(async () => {
+		if (DeviceIsMobile()) {
+			toast.success('Mobile Device Detected', {
+				duration: 10000,
+				description:
+					'Drag and Drop of tasks is not supported on mobile. Use menu button to perform these actions instead.',
+				action: {
+					label: 'Ok',
+					onClick: () => {}
+				}
+			});
+		}
+	});
 
 	function resetAlert() {
 		alertTitle = 'Are you sure?';
@@ -406,11 +423,12 @@
 						</Button>
 					</div>
 					<div
-						class="tasks min-h-[12rem] rounded-md p-2"
+						class="tasks min-h-[13rem] rounded-md p-2"
 						style={`background-color: #${section.statusColor + '20'}`}
 						use:dndzone={{
 							items: section.tasks,
 							flipDurationMs,
+							dragDisabled,
 							transformDraggedElement,
 							dropTargetStyle: {
 								outline: `#${section.statusColor + '80'} dashed 1px`,
@@ -435,12 +453,7 @@
 											</div>
 											<DropdownMenu.Root>
 												<DropdownMenu.Trigger asChild let:builder>
-													<Button
-														builders={[builder]}
-														variant="ghost"
-														size="icon"
-														class="hidden sm:inline-flex"
-													>
+													<Button builders={[builder]} variant="ghost" size="icon">
 														<VerticalDots class="size-4" aria-hidden="true" />
 													</Button>
 												</DropdownMenu.Trigger>
