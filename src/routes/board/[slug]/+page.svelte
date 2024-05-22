@@ -247,18 +247,6 @@
 		kanban.set(newKanban);
 	}
 
-	// function handleDnDConsiderSection(e) {
-	// 	$kanban.sections = e.detail.items;
-	// 	$kanban.saveLocally();
-	// 	kanban.set($kanban);
-	// }
-
-	// function handleDnDFinalizeSection(e) {
-	// 	$kanban.sections = e.detail.items;
-	// 	$kanban.saveLocally();
-	// 	kanban.set($kanban);
-	// }
-
 	function handleDndConsiderTasks(cid: string, e: any) {
 		console.log(typeof e);
 		const colIdx = $kanban.sections.findIndex((c) => c.id === cid);
@@ -351,7 +339,7 @@
 						<DropdownMenu.Group>
 							<DropdownMenu.Item
 								on:click={() => {
-									downloadAsJson(kanban, $kanban.id);
+									downloadAsJson($kanban.toJSON(), $kanban.id);
 									toast.success('Downloaded Successfully', {
 										description: `${$kanban.id}.json has been downloaded successfully. You can now share or(and) import the file.`,
 										action: {
@@ -409,7 +397,12 @@
 			{#each $kanban.sections as section (section.id)}
 				<div class="grid-item rounded">
 					<div class="top mb-4 flex items-center justify-between">
-						<span class="text-sm font-bold">{section.title}</span>
+						<span class="text-sm font-bold">
+							{section.title}
+							<span class="ml-2 text-sm text-muted-foreground">
+								{section.tasks.length}
+							</span>
+						</span>
 						<Button
 							variant="ghost"
 							on:click={() => {

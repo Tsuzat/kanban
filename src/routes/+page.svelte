@@ -13,11 +13,11 @@
 	{#if $KanBans.length === 0}
 		<center>There is not Kanban. Please create one.</center>
 	{/if}
-	<div class="grid-container mt-4">
+	<div class="mt-4 flex flex-wrap items-center">
 		{#each $KanBans as kanban}
-			<div class="grid-item">
+			<div class="mx-4">
 				<Card.Root
-					class="h-[12rem] max-w-[50%] cursor-pointer transition-all hover:scale-[1.01]"
+					class="h-[12rem] w-[20rem] cursor-pointer overflow-hidden transition-all hover:scale-[1.01]"
 					on:click={() => {
 						goto(`/board/${kanban.id}`);
 					}}
@@ -42,13 +42,6 @@
 <style>
 	.mobile {
 		display: none;
-	}
-	.grid-container {
-		max-width: 100%;
-		width: 100%;
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-		gap: 2rem;
 	}
 
 	@media (max-width: 768px) {
