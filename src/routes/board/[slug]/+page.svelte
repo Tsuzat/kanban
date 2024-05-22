@@ -22,13 +22,7 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import * as Card from '$lib/components/ui/card';
-	import {
-		cn,
-		downloadAsJson,
-		generateRandomId,
-		modifyColorBasedOnTheme,
-		totalTasksInKanban
-	} from '$lib/utils';
+	import { cn, downloadAsJson, generateRandomId, totalTasksInKanban } from '$lib/utils';
 	import { KanBans } from '$lib/store';
 	import { goto } from '$app/navigation';
 	import { toast } from 'svelte-sonner';
@@ -39,7 +33,6 @@
 	import type { TaskPriority } from '$lib/types/types';
 	import Task from '$lib/types/Task';
 	import * as Drawer from '$lib/components/ui/drawer';
-	import { mode } from 'mode-watcher';
 
 	export let data: PageData;
 
@@ -429,7 +422,10 @@
 					>
 						{#each section.tasks as task (task.id)}
 							<div animate:flip={{ duration: flipDurationMs }} class="outline-none">
-								<Card.Root class="my-2 cursor-pointer transition-all hover:scale-[1.01]">
+								<Card.Root
+									class="my-2 cursor-pointer transition-all hover:scale-[1.01]"
+									on:click={() => console.log('Clicked')}
+								>
 									<Card.Header>
 										<div class="card-top flex items-center justify-between">
 											<div
@@ -439,7 +435,12 @@
 											</div>
 											<DropdownMenu.Root>
 												<DropdownMenu.Trigger asChild let:builder>
-													<Button builders={[builder]} variant="ghost" size="icon">
+													<Button
+														builders={[builder]}
+														variant="ghost"
+														size="icon"
+														class="hidden sm:inline-flex"
+													>
 														<VerticalDots class="size-4" aria-hidden="true" />
 													</Button>
 												</DropdownMenu.Trigger>
@@ -572,7 +573,7 @@
 
 	@media (max-width: 768px) {
 		.topbar h1 {
-			margin-left: 4rem;
+			margin-left: 3rem;
 		}
 	}
 </style>

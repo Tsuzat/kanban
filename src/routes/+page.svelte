@@ -17,7 +17,7 @@
 		{#each $KanBans as kanban}
 			<div class="grid-item">
 				<Card.Root
-					class="h-[12rem] cursor-pointer transition-all hover:scale-[1.01]"
+					class="h-[12rem] max-w-[50%] cursor-pointer transition-all hover:scale-[1.01]"
 					on:click={() => {
 						goto(`/board/${kanban.id}`);
 					}}

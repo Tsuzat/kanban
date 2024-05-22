@@ -89,27 +89,3 @@ export const totalTasksInKanban = (kanban: KanbanBoard): number => {
 	}
 	return totalTasks;
 };
-
-export function modifyColorBasedOnTheme(hexColor: string, theme: 'light' | 'dark'): string {
-	// Remove hash symbol if present
-	const color = hexColor.replace('#', '');
-
-	// Validate hex code length
-	if (color.length !== 6) {
-		throw new Error('Invalid hex color code. Please provide a 6-character hex code.');
-	}
-
-	// Convert hex code to RGB values
-	const rgb = color.match(/.{1,2}/g)!.map((val) => parseInt(val, 16));
-
-	// Define adjustment based on theme
-	const adjustment = theme === 'dark' ? 30 : -30;
-
-	// Apply adjustment to each RGB value, keeping it within 0-255 range
-	const newRgb = rgb.map((value) => Math.max(0, Math.min(255, value + adjustment)));
-
-	// Convert new RGB values back to hex code
-	const newHex = `#${newRgb.map((x) => x.toString(16).padStart(2, '0')).join('')}`;
-	console.log(newHex);
-	return newHex;
-}
