@@ -89,3 +89,19 @@ export const totalTasksInKanban = (kanban: KanbanBoard): number => {
 	}
 	return totalTasks;
 };
+
+export const parseToDos = (markdown: string): [number, number] => {
+	let totalTodos = 0;
+	let completedTodos = 0;
+
+	const lines = markdown.split('\n');
+	for (const line of lines) {
+		if (line.startsWith('- [ ] ')) {
+			totalTodos++;
+		} else if (line.startsWith('- [x] ') || line.startsWith('- [X] ')) {
+			totalTodos++;
+			completedTodos++;
+		}
+	}
+	return [totalTodos, completedTodos];
+};
