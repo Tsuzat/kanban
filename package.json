@@ -40,7 +40,7 @@
 		"@fontsource-variable/dm-sans": "^5.0.6",
 		"@fontsource-variable/fira-code": "^5.0.18",
 		"@internationalized/date": "^3.5.3",
-		"bits-ui": "^0.21.7",
+		"bits-ui": "^0.21.9",
 		"carta-md": "^4.0.4",
 		"clsx": "^2.1.1",
 		"lucide-svelte": "^0.376.1",

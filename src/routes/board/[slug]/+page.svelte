@@ -20,7 +20,7 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import * as Card from '$lib/components/ui/card';
-	import { cn, downloadAsJson, generateRandomId, totalTasksInKanban } from '$lib/utils';
+	import { cn, downloadAsJson, generateRandomId, parseToDos, totalTasksInKanban } from '$lib/utils';
 	import { KanBans } from '$lib/store';
 	import { goto } from '$app/navigation';
 	import { toast } from 'svelte-sonner';
@@ -34,6 +34,8 @@
 	import { DeviceIsMobile } from '$lib/isMobile';
 	import { onMount } from 'svelte';
 	import TaskSheet from '$lib/components/TaskSheet.svelte';
+	import Progress from '$lib/components/ui/progress/progress.svelte';
+	import TaskTodos from '$lib/components/TaskTodos.svelte';
 
 	let flipDurationMs = 200;
 	let dragDisabled = DeviceIsMobile();
@@ -402,7 +404,10 @@
 					<div class="top mb-4 flex items-center justify-between">
 						<span class="text-sm font-bold">
 							{section.title}
-							<span class="ml-2 text-sm text-muted-foreground">
+							<span
+								class="ml-2 rounded-full px-2 py-1 text-sm text-muted-foreground"
+								style={`background-color: #${section.statusColor + '20'}; color: #${section.statusColor};`}
+							>
 								{section.tasks.length}
 							</span>
 						</span>
@@ -540,6 +545,7 @@
 										</Card.Title>
 										<Card.Description>
 											<span>{task.description}</span>
+											<TaskTodos markdown={task.notes} />
 											<div class="duedate mt-4 flex items-center">
 												<CalendarIcon class="mr-4 size-4 text-foreground" aria-label="true" />
 												<span class="text-sm">{task.dueDate}</span>
