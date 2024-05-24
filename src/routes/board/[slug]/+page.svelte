@@ -15,7 +15,8 @@
 		ChevronsUp,
 		ChevronsDown,
 		ArrowUpAndDown,
-		ArrowLeftAndRight
+		ArrowLeftAndRight,
+		EditIcon
 	} from '$lib/icons';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
@@ -425,7 +426,6 @@
 					</div>
 					<div
 						class="tasks min-h-[13rem] rounded-md p-2"
-						style={`background-color: #${section.statusColor + '20'}`}
 						use:dndzone={{
 							items: section.tasks,
 							flipDurationMs,
@@ -442,11 +442,8 @@
 						{#each section.tasks as task (task.id)}
 							<div animate:flip={{ duration: flipDurationMs }} class="outline-none">
 								<Card.Root
-									class="my-2 cursor-pointer transition-all hover:scale-[1.01]"
-									on:click={() => {
-										currentTaskContext = task;
-										openTask.set(true);
-									}}
+									class="group my-2 transition-all hover:scale-[1.01]"
+									style={`background-color: #${section.statusColor + '10'}; border-color: #${section.statusColor + '20'}`}
 								>
 									<Card.Header>
 										<div class="card-top flex items-center justify-between">
@@ -455,84 +452,97 @@
 											>
 												{task.priority}
 											</div>
-											<DropdownMenu.Root>
-												<DropdownMenu.Trigger asChild let:builder>
-													<Button builders={[builder]} variant="ghost" size="icon">
-														<VerticalDots class="size-4" aria-hidden="true" />
-													</Button>
-												</DropdownMenu.Trigger>
-												<DropdownMenu.Content class="w-44">
-													<DropdownMenu.Group>
-														<DropdownMenu.Item
-															on:click={() => {
-																downloadAsJson(task, task.title);
-															}}
-														>
-															<Download class="mr-2 size-4" />
-															<span>Download as JSON</span>
-														</DropdownMenu.Item>
-														<DropdownMenu.Sub>
-															<DropdownMenu.SubTrigger>
-																<ArrowUpAndDown class="mr-2 h-4 w-4" />
-																<span>Move Internally</span>
-															</DropdownMenu.SubTrigger>
-															<DropdownMenu.SubContent>
-																<DropdownMenu.Item
-																	on:click={() => {
-																		moveTaskUp(task, section);
-																	}}
-																>
-																	<ChevronsUp class="mr-2 size-4" />
-																	<span>Move Up</span>
-																</DropdownMenu.Item>
-																<DropdownMenu.Item
-																	on:click={() => {
-																		moveTaskDown(task, section);
-																	}}
-																>
-																	<ChevronsDown class="mr-2 size-4" />
-																	<span>Move Down</span>
-																</DropdownMenu.Item>
-															</DropdownMenu.SubContent>
-														</DropdownMenu.Sub>
-														<DropdownMenu.Sub>
-															<DropdownMenu.SubTrigger>
-																<ArrowLeftAndRight class="mr-2 h-4 w-4" />
-																<span>Move to section</span>
-															</DropdownMenu.SubTrigger>
-															<DropdownMenu.SubContent>
-																{#each $kanban.sections as sec}
-																	{#if sec !== section}
-																		<DropdownMenu.Item
-																			on:click={() => {
-																				moveTaskToSection(task, section, sec);
-																			}}
-																		>
-																			<span>{sec.title}</span>
-																		</DropdownMenu.Item>
-																	{/if}
-																{/each}
-															</DropdownMenu.SubContent>
-														</DropdownMenu.Sub>
-														<DropdownMenu.Item
-															on:click={() => {
-																alertDescription =
-																	'Deleting this Task will not be reversible. Do you still want to delete this?';
-																continueText = 'Delete Anyway';
-																isDestructive = true;
-																onClick = () => {
-																	deleteTask(task, section);
-																};
-																open = true;
-															}}
-															class="text-red-600 data-[highlighted]:bg-red-600 data-[highlighted]:text-foreground"
-														>
-															<Delete class="mr-2 size-4 " />
-															<span>Delete</span>
-														</DropdownMenu.Item>
-													</DropdownMenu.Group>
-												</DropdownMenu.Content>
-											</DropdownMenu.Root>
+											<div>
+												<Button
+													variant="ghost"
+													size="icon"
+													class="scale-100 transition-all group-hover:scale-100 sm:scale-0"
+													on:click={() => {
+														currentTaskContext = task;
+														openTask.set(true);
+													}}
+												>
+													<EditIcon class="size-4" />
+												</Button>
+												<DropdownMenu.Root>
+													<DropdownMenu.Trigger asChild let:builder>
+														<Button builders={[builder]} variant="ghost" size="icon">
+															<VerticalDots class="size-4" aria-hidden="true" />
+														</Button>
+													</DropdownMenu.Trigger>
+													<DropdownMenu.Content class="w-44">
+														<DropdownMenu.Group>
+															<DropdownMenu.Item
+																on:click={() => {
+																	downloadAsJson(task, task.title);
+																}}
+															>
+																<Download class="mr-2 size-4" />
+																<span>Download as JSON</span>
+															</DropdownMenu.Item>
+															<DropdownMenu.Sub>
+																<DropdownMenu.SubTrigger>
+																	<ArrowUpAndDown class="mr-2 h-4 w-4" />
+																	<span>Move Internally</span>
+																</DropdownMenu.SubTrigger>
+																<DropdownMenu.SubContent>
+																	<DropdownMenu.Item
+																		on:click={() => {
+																			moveTaskUp(task, section);
+																		}}
+																	>
+																		<ChevronsUp class="mr-2 size-4" />
+																		<span>Move Up</span>
+																	</DropdownMenu.Item>
+																	<DropdownMenu.Item
+																		on:click={() => {
+																			moveTaskDown(task, section);
+																		}}
+																	>
+																		<ChevronsDown class="mr-2 size-4" />
+																		<span>Move Down</span>
+																	</DropdownMenu.Item>
+																</DropdownMenu.SubContent>
+															</DropdownMenu.Sub>
+															<DropdownMenu.Sub>
+																<DropdownMenu.SubTrigger>
+																	<ArrowLeftAndRight class="mr-2 h-4 w-4" />
+																	<span>Move to section</span>
+																</DropdownMenu.SubTrigger>
+																<DropdownMenu.SubContent>
+																	{#each $kanban.sections as sec}
+																		{#if sec !== section}
+																			<DropdownMenu.Item
+																				on:click={() => {
+																					moveTaskToSection(task, section, sec);
+																				}}
+																			>
+																				<span>{sec.title}</span>
+																			</DropdownMenu.Item>
+																		{/if}
+																	{/each}
+																</DropdownMenu.SubContent>
+															</DropdownMenu.Sub>
+															<DropdownMenu.Item
+																on:click={() => {
+																	alertDescription =
+																		'Deleting this Task will not be reversible. Do you still want to delete this?';
+																	continueText = 'Delete Anyway';
+																	isDestructive = true;
+																	onClick = () => {
+																		deleteTask(task, section);
+																	};
+																	open = true;
+																}}
+																class="text-red-600 data-[highlighted]:bg-red-600 data-[highlighted]:text-foreground"
+															>
+																<Delete class="mr-2 size-4 " />
+																<span>Delete</span>
+															</DropdownMenu.Item>
+														</DropdownMenu.Group>
+													</DropdownMenu.Content>
+												</DropdownMenu.Root>
+											</div>
 										</div>
 										<Card.Title>
 											<div class="inline-flex items-center">
