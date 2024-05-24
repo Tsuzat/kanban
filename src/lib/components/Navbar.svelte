@@ -10,13 +10,13 @@
 	import { writable, type Writable } from 'svelte/store';
 	import ToggleTheme from './ToggleTheme.svelte';
 	import NewProject from './NewProject.svelte';
-	import { KanBans } from '$lib/store';
+	import { KanBans, isNavbarCollapsed } from '$lib/store';
 	import { page } from '$app/stores';
 	import { project_icons } from '$lib/project_icons';
 	import { Folder } from 'lucide-svelte';
 	import Logo from './Logo.svelte';
 
-	let isCollapsed: boolean;
+	$: isCollapsed = $isNavbarCollapsed;
 
 	// for mobile view
 	let mobile = false;
@@ -31,6 +31,7 @@
 
 	const togglePanel = () => {
 		isCollapsed = !isCollapsed;
+		isNavbarCollapsed.set(isCollapsed);
 	};
 </script>
 
