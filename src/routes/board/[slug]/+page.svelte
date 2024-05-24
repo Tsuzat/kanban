@@ -33,6 +33,7 @@
 	import * as Drawer from '$lib/components/ui/drawer';
 	import { DeviceIsMobile } from '$lib/isMobile';
 	import { onMount } from 'svelte';
+	import TaskSheet from '$lib/components/TaskSheet.svelte';
 
 	let flipDurationMs = 200;
 	let dragDisabled = DeviceIsMobile();
@@ -56,6 +57,8 @@
 	 * which can be usefull when creating a new task
 	 * */
 	let currentSectionContext: TasksSection | null = null;
+
+	let currentTaskContext: Task | null = null;
 
 	onMount(async () => {
 		if (DeviceIsMobile()) {
@@ -265,11 +268,24 @@
 	function transformDraggedElement(draggedEl: HTMLElement, data: any, index: any) {
 		draggedEl.style.opacity = '0.5';
 	}
+
+	function updateTask(event: any) {
+		let { task } = event.detail as {
+			task: Task;
+		};
+		currentTaskContext = task;
+		kanban.set($kanban);
+		$kanban.saveLocally();
+	}
 </script>
 
 <svelte:head>
-	<title>{$kanban.title}</title>
+	<title>Board | {$kanban.title}</title>
 </svelte:head>
+
+{#if currentTaskContext}
+	<TaskSheet task={currentTaskContext} open={openTask} on:onchange={updateTask} />
+{/if}
 
 <AlertDialog.Root bind:open>
 	<AlertDialog.Content>
@@ -296,19 +312,6 @@
 
 <NewSection open={addNewSection} on:callback={addSection} />
 <NewTask open={addNewTask} on:callback={addTask} />
-
-<Drawer.Root bind:open={$openTask}>
-	<Drawer.Content>
-		<Drawer.Header>
-			<Drawer.Title>Are you sure absolutely sure?</Drawer.Title>
-			<Drawer.Description>This action cannot be undone.</Drawer.Description>
-		</Drawer.Header>
-		<Drawer.Footer>
-			<Button>Submit</Button>
-			<Drawer.Close>Cancel</Drawer.Close>
-		</Drawer.Footer>
-	</Drawer.Content>
-</Drawer.Root>
 
 {#if kanban !== null}
 	<div class="m-2 max-h-full w-full overflow-y-auto overflow-x-hidden p-2">
@@ -435,7 +438,10 @@
 							<div animate:flip={{ duration: flipDurationMs }} class="outline-none">
 								<Card.Root
 									class="my-2 cursor-pointer transition-all hover:scale-[1.01]"
-									on:click={() => console.log('Clicked')}
+									on:click={() => {
+										currentTaskContext = task;
+										openTask.set(true);
+									}}
 								>
 									<Card.Header>
 										<div class="card-top flex items-center justify-between">
