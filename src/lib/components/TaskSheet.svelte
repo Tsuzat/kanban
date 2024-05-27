@@ -57,7 +57,7 @@
 		<Sheet.Header>
 			<Sheet.Title>
 				<input
-					class="bg-transparent text-3xl outline-none focus:border-none focus:outline-none"
+					class="bg-transparent text-xl outline-none focus:border-none focus:outline-none"
 					bind:value={task.title}
 				/>
 			</Sheet.Title>
