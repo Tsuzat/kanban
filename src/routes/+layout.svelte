@@ -1,12 +1,13 @@
 <script lang="ts">
 	import '@fontsource-variable/dm-sans';
 	import '../app.css';
+	import { ModeWatcher } from 'mode-watcher';
 </script>
 
 <svelte:head>
-	<!-- Primary Meta Tags -->
-	<title>Kanban Board App - Organize Your Tasks Efficiently</title>
-
+	<title>Kanban Board App - Organize Your Tasks Efficientl</title>
 </svelte:head>
+
+<ModeWatcher />
 
 <slot />

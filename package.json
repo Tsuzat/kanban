@@ -35,8 +35,13 @@
 	"type": "module",
 	"dependencies": {
 		"@fontsource-variable/dm-sans": "^5.0.6",
+		"@tsparticles/slim": "^3.4.0",
+		"@tsparticles/svelte": "^3.1.1",
+		"bits-ui": "^0.21.10",
 		"clsx": "^2.1.1",
+		"lucide-svelte": "^0.379.0",
 		"mode-watcher": "^0.3.0",
+		"svelte-radix": "^1.1.0",
 		"tailwind-merge": "^2.3.0",
 		"tailwind-variants": "^0.2.1"
 	}
