@@ -13,18 +13,16 @@
 	<div class="fixed right-0 top-0">
 		<ToggleTheme />
 	</div>
-
+	<SpotLight />
+	<div class="logo relative"></div>
 	<section
-		class="flex flex-col items-center sm:w-[55%] w-[90%] h-screen justify-around m-auto py-4"
+		class="flex flex-col items-center sm:w-[55%] w-[90%] h-[calc(100dvh)] justify-around m-auto py-4"
 	>
-		<SpotLight />
-		<div class="logo relative">
-			<Logo size={4} />
-		</div>
+		<Logo size={4} />
 		<div class="between-lines">Introducing</div>
 		<div class="title text-7xl sm:text-8xl font-extrabold text-center">Kanban</div>
 		<div>
-			<div class="text-xl sm:text-3xl font-extrabold text-center my-4">
+			<div class="text-3xl font-extrabold text-center my-2 sm:my-4">
 				An Effortless Kanban Boards
 			</div>
 			<div class="text-center text-muted-foreground">
