@@ -19,7 +19,7 @@
 		margin: 0 auto;
 		transition: filter 1s ease-in-out;
 		height: 100%;
-		width: 100%;
+		width: 100vw;
 		overflow: hidden;
 	}
 	.spotlight > div {
@@ -29,7 +29,7 @@
 		right: 0;
 		margin: 0 auto;
 		top: 3rem;
-		width: 30em;
+		width: 100vw;
 		height: 100%;
 		background-image: conic-gradient(
 			from 0deg at 50% -5%,
@@ -106,7 +106,7 @@
 	}
 	@media (max-width: 600px) {
 		.spotlight > div {
-			left: -1.5rem;
+			/* left: -3rem; */
 			top: 4rem;
 		}
 	}

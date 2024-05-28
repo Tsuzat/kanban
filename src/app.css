@@ -57,3 +57,26 @@
 		font-family: 'DM Sans Variable', sans-serif;
 	}
 }
+
+.between-lines {
+	@apply flex w-full items-center justify-center text-sm text-muted-foreground;
+}
+
+.between-lines::before,
+.between-lines::after {
+	content: '';
+	width: 5rem;
+	height: 1px;
+	background: linear-gradient(to right, rgba(59, 130, 246, 0), rgba(59, 130, 246, 0.5));
+}
+
+.between-lines::before {
+	left: 0;
+	margin-right: 1rem;
+}
+
+.between-lines::after {
+	right: 0;
+	margin-left: 1rem;
+	transform: rotateY(180deg);
+}
