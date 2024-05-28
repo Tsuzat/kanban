@@ -22,7 +22,7 @@
 			<Logo size={4} />
 		</div>
 		<div class="between-lines">Introducing</div>
-		<div class="title text-5xl sm:text-8xl font-extrabold text-center">Kanban</div>
+		<div class="title text-7xl sm:text-8xl font-extrabold text-center">Kanban</div>
 		<div>
 			<div class="text-xl sm:text-3xl font-extrabold text-center my-4">
 				An Effortless Kanban Boards
@@ -32,7 +32,7 @@
 				Drag-and-drop tasks, write extensive notes on tasks, and stay on top of your projects.
 			</div>
 		</div>
-		<div class="flex items-center mt-4">
+		<div class="flex items-center">
 			<GlowingButton>
 				<Button variant="outline" class="z-20 relative" href="#">Explore Features</Button>
 			</GlowingButton>
@@ -44,8 +44,6 @@
 <style>
 	.title {
 		width: fit-content;
-		font-size: 7em;
-		font-weight: 600;
 		background: radial-gradient(
 				2em 2em at 50% 50%,
 				transparent calc(var(--p) - 2em),
