@@ -13,14 +13,14 @@
 	let particlesConfig = {
 		particles: {
 			color: {
-				value: '#808080'
+				value: '#3b82f6'
 			},
 			links: {
 				enable: true,
 				blink: true,
 				distance: 150,
-				color: '#808080',
-				opacity: 0.2,
+				color: '#3b82f6',
+				opacity: 0.1,
 				width: 1
 			},
 			move: {
@@ -30,7 +30,7 @@
 				value: 50
 			},
 			opacity: {
-				value: 0.2,
+				value: 0.1,
 				random: false,
 				anim: {
 					enable: false,
@@ -82,7 +82,7 @@
 	};
 
 	let onParticlesLoaded = (event: any) => {
-		const particlesContainer = event.detail.particles;
+		event.detail.particles;
 	};
 
 	void particlesInit(async (engine) => {
@@ -93,8 +93,6 @@
 <svelte:component
 	this={ParticlesComponent}
 	id="tsparticles"
-	class="put your classes here"
-	style=""
 	options={particlesConfig}
 	on:particlesLoaded={onParticlesLoaded}
 />
