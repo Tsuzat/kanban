@@ -26,7 +26,7 @@
 				An Effortless Kanban Boards
 			</div>
 			<div class="text-center text-muted-foreground">
-				Streamline your workflow with suckless, minimul, powerful and feature rich kanban board app.
+				Streamline your workflow with suckless, minimal, powerful and feature rich kanban board app.
 				Drag-and-drop tasks, write extensive notes on tasks, and stay on top of your projects.
 			</div>
 		</div>
