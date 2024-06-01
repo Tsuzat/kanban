@@ -32,6 +32,5 @@ if (browser) {
 }
 
 isNavbarCollapsed.subscribe((value) => {
-	console.log('isNavbarCollapsed', value);
 	if (browser) localStorage.setItem('kanban-navbar-collapsed', value ? 'true' : 'false');
 });
