@@ -1,9 +1,10 @@
 <script lang="ts">
 	export let showTitle = false;
 	export let size = 2.5;
+	export let href = '/';
 </script>
 
-<a class="logo flex items-center" href="/">
+<a class="logo flex items-center" {href}>
 	<div class="relative" style={`width: ${size}rem; height: ${size}rem`}>
 		<div class="rect"></div>
 		<div class="rect blur-rect"></div>

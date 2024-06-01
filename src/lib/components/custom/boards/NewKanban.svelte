@@ -4,15 +4,11 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import { project_icons } from '$lib/project_icons';
-	import { KANBANS } from '$lib/store';
 	import type { Writable } from 'svelte/store';
 	import * as Select from '$lib/components/ui/select/index.js';
-	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
-	import { type ComponentType } from 'svelte';
-	import { type Icon } from 'lucide-svelte';
 	import { createNewKanban, generateKanbanId } from '$lib/localStore/utils';
-	import type { Kanban } from '$lib/localStore/types';
+	import type { Kanban, Section } from '$lib/localStore/types';
 
 	export let open: Writable<boolean>;
 
@@ -29,14 +25,15 @@
 	function onSubmit() {
 		// Generate Random Id for new Kanban
 		let id = generateKanbanId();
+		let sections: Section[] = [];
 		let newKanban: Kanban = {
 			id,
 			title,
 			icon,
-			sections: []
+			sections
 		};
 		createNewKanban(newKanban);
-		// Redirect to new Kanban
+		open.set(false);
 		goto(`/boards/${id}`);
 	}
 </script>
@@ -56,7 +53,6 @@
 			</div>
 			<div class="grid grid-cols-4 items-center gap-4">
 				<Label for="Icon" class="text-right">Icon</Label>
-				<!-- <Input id="Icon" type="text" bind:value={icon} class="col-span-3" /> -->
 				<svelte:component this={project_icons[icon]} class="size-4" />
 				<Select.Root>
 					<Select.Trigger class="w-[10rem]">

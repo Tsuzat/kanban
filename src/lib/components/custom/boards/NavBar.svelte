@@ -33,11 +33,9 @@
 		isCollapsed = !isCollapsed;
 		isNavbarCollapsed.set(isCollapsed);
 	};
-
-	function createNewKanban() {}
 </script>
 
-<NewKanban {open} on:callback={createNewKanban} />
+<NewKanban {open} />
 
 <div class="mobile">
 	<Button
@@ -56,13 +54,13 @@
 <nav
 	data-collapsed={isCollapsed}
 	class:navmobile={mobile}
-	class="flex h-full flex-col justify-evenly bg-gray-200 p-5 transition-all dark:bg-black"
+	class="flex h-full flex-col justify-evenly bg-gray-200 p-4 transition-all dark:bg-black"
 >
 	<div
 		data-collapsed={isCollapsed}
 		class="flex items-center justify-between data-[collapsed=true]:flex-col data-[collapsed=true]:space-y-2"
 	>
-		<Logo />
+		<Logo href="/boards" />
 		<ToggleTheme />
 
 		<Tooltip.Root openDelay={0}>
@@ -114,12 +112,12 @@
 					<Tooltip.Root openDelay={0}>
 						<Tooltip.Trigger asChild let:builder>
 							<Button
-								href={`/board/${board.id}`}
+								href={`/boards/${board.id}`}
 								builders={[builder]}
 								variant="ghost"
 								size="icon"
 								class={cn(
-									$page.url.pathname === `/board/${board.id}` &&
+									$page.url.pathname === `/boards/${board.id}` &&
 										'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white'
 								)}
 							>
@@ -136,11 +134,11 @@
 					</Tooltip.Root>
 				{:else}
 					<Button
-						href={`/board/${board.id}`}
+						href={`/boards/${board.id}`}
 						variant="ghost"
 						size="sm"
 						class={cn('justify-start', {
-							'bg-muted hover:bg-muted': $page.url.pathname === `/board/${board.id}`
+							'bg-muted hover:bg-muted': $page.url.pathname === `/boards/${board.id}`
 						})}
 					>
 						<svelte:component
