@@ -55,7 +55,18 @@
 	body {
 		@apply bg-background text-foreground;
 		font-family: 'DM Sans Variable', sans-serif;
+		overflow-x: hidden;
 	}
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+::-webkit-scrollbar {
+	display: none;
+}
+
+/* For Firefox */
+html {
+	scrollbar-width: none; /* Hide scrollbar for Firefox */
 }
 
 .between-lines {
