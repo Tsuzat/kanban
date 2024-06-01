@@ -119,10 +119,106 @@ export function saveKanbanLocally(kanban: Kanban): void {
 	}
 }
 
+/**
+ * Create a new kanban and save it to `localStorage`
+ * @param kanban kanban to create
+ */
 export function createNewKanban(kanban: Kanban): void {
+	saveKanbanLocally(kanban);
 	KANBANS.update((kanbans) => {
 		kanbans.push(kanban);
-		saveKanbanLocally(kanban);
 		return kanbans;
 	});
+}
+
+/**
+ * Move a task from one section to another
+ * @param task task to move
+ * @param sectionTo section to move the task to
+ * @param sectionFrom section to move the task from
+ */
+export function moveTaskFromSectionTo(task: Task, sectionFrom: Section, sectionTo: Section): void {
+	const taskIndex = sectionFrom.tasks.indexOf(task);
+	sectionFrom.tasks.splice(taskIndex, 1);
+	sectionTo.tasks.push(task);
+}
+
+/**
+ * Remove a task from a section
+ * @param task task to remove
+ * @param section section to remove the task from
+ */
+export function deleteTask(task: Task, section: Section): void {
+	const taskIndex = section.tasks.indexOf(task);
+	section.tasks.splice(taskIndex, 1);
+}
+
+/**
+ * Delete a section from a kanban
+ * @param section section to delete
+ * @param kanban kanban to delete the section from
+ */
+export function deleteSection(section: Section, kanban: Kanban): void {
+	const sectionIndex = kanban.sections.indexOf(section);
+	kanban.sections.splice(sectionIndex, 1);
+	saveKanbanLocally(kanban);
+}
+
+/**
+ * Remove a kanban from local storage
+ * @param kanban kanban to remove
+ */
+export function deleteKanbanFromLocalStorage(kanban: Kanban): void {
+	if (browser) {
+		localStorage.removeItem(`kanban-board-${kanban.id}`);
+	}
+	KANBANS.update((kanbans) => {
+		kanbans.splice(kanbans.indexOf(kanban), 1);
+		return kanbans;
+	});
+}
+
+/**
+ * Add a section to a kanban
+ * @param kanban kanban to add the section to
+ * @param section section to add
+ */
+export function addSectionToKanban(kanban: Kanban, section: Section): void {
+	kanban.sections.push(section);
+	saveKanbanLocally(kanban);
+}
+
+/**
+ * Add a task to a section
+ * @param section section to add the task to
+ * @param task task to add
+ */
+export function addTaskToSection(section: Section, task: Task): void {
+	section.tasks.push(task);
+}
+
+/**
+ * Move a task up in same section
+ * @param task task to move
+ * @param section section to move the task to
+ */
+export function moveTaskUpInSection(task: Task, section: Section): void {
+	const taskIndex = section.tasks.indexOf(task);
+	if (taskIndex === 0) return;
+	const temp = section.tasks[taskIndex - 1];
+	section.tasks[taskIndex - 1] = task;
+	section.tasks[taskIndex] = temp;
+}
+
+/**
+ * Move a task down in same section
+ * @param task task to move
+ * @param section section to move the task to
+ */
+export function moveTaskDownInSection(task: Task, section: Section): void {
+	const taskIndex = section.tasks.indexOf(task);
+	if (taskIndex === section.tasks.length - 1) return;
+	const temp = section.tasks[taskIndex + 1];
+	section.tasks[taskIndex + 1] = task;
+	section.tasks[taskIndex] = temp;
 }
