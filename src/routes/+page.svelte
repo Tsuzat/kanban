@@ -6,9 +6,23 @@
 	import ToggleTheme from '$lib/components/custom/ToggleTheme.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { MoveRight } from '$lib/icons';
+	import { features } from './data';
+	import * as Card from '$lib/components/ui/card';
+	import { onMount } from 'svelte';
+
+	onMount(() => {
+		document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+			anchor.addEventListener('click', function (e) {
+				e.preventDefault();
+				document.querySelector(this.getAttribute('href')).scrollIntoView({
+					behavior: 'smooth'
+				});
+			});
+		});
+	});
 </script>
 
-<div class="app w-screen overflow-x-hidden">
+<div class="app">
 	<Particles />
 	<div class="fixed right-0 top-0">
 		<ToggleTheme />
@@ -22,7 +36,7 @@
 		<div class="between-lines">Introducing</div>
 		<div class="title text-7xl sm:text-8xl font-extrabold text-center">Kanban</div>
 		<div>
-			<div class="text-3xl font-extrabold text-center my-2 sm:my-4">
+			<div class="text-3xl font-extrabold text-center my-2 sm:my-4 text-popover-foreground">
 				An Effortless Kanban Boards
 			</div>
 			<div class="text-center text-muted-foreground">
@@ -32,9 +46,43 @@
 		</div>
 		<div class="flex items-center">
 			<GlowingButton>
-				<Button variant="outline" class="z-20 relative" href="#">Explore Features</Button>
+				<Button variant="outline" class="z-20 relative" href="#features">Explore Features</Button>
 			</GlowingButton>
-			<Button class="group text-white ml-4" href="#">Get Started <MoveRight class="ml-2" /></Button>
+			<Button class="group text-white ml-4" href="/boards"
+				>Get Started <MoveRight class="ml-2" /></Button
+			>
+		</div>
+	</section>
+	<section
+		class="h-[calc(100dvh)] w-[90%] flex flex-col items-center justify-around sm:w-[55%] m-auto"
+		id="features"
+	>
+		<div class="between-lines">Features</div>
+		<div class="text-3xl font-extrabold text-center">
+			Streamline Your Workflow with Powerful Kanban Boards
+		</div>
+		<div class="text-center text-muted-foreground">
+			Streamline Your Workflow with Powerful Kanban Boards Unlock your team's productivity with our
+			feature-rich Kanban boards. Drag and drop tasks, customize views, collaborate in real-time,
+			and automate your workflows.
+		</div>
+		<div class="mx-auto grid items-start gap-8 py-12 sm:grid-cols-2 md:gap-12 lg:grid-cols-2">
+			{#each features as feature}
+				<div class="hover:scale-105 group transition-all z-50">
+					<Card.Root
+						class="grid gap-1 group-hover:bg-muted z-30 relative bg-background transition-all"
+					>
+						<Card.Header>
+							<Card.Title class="flex items-center">
+								<svelte:component this={feature.icon} class="mr-4" />
+								<span>{feature.name}</span>
+							</Card.Title>
+							<Card.Description class="text-start">{feature.description}</Card.Description>
+						</Card.Header>
+						<Card.Content></Card.Content>
+					</Card.Root>
+				</div>
+			{/each}
 		</div>
 	</section>
 </div>
