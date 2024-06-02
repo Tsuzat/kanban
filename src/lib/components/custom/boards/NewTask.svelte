@@ -10,7 +10,7 @@
 	import { Calendar as CalendarIcon } from '$lib/icons';
 	import { cn } from '$lib/components/utils';
 	import {
-		CalendarDateTime,
+		CalendarDate,
 		DateFormatter,
 		getLocalTimeZone,
 		type DateValue
@@ -32,7 +32,7 @@
 
 	let title: string = '';
 	let description: string = '';
-	let value: DateValue = new CalendarDateTime(year, month, day);
+	let value: DateValue = new CalendarDate(year, month, day);
 	let priority: TaskPriority = TaskPriority.LOW;
 
 	$: dueDate = value?.toString();
