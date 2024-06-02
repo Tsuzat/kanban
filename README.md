@@ -1,38 +1,38 @@
-# create-svelte
+# [KANBAN BOARD](https://kanban.tsuzat.com)
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+<center>
 
-## Creating a project
+![Kanban Board](/static/icons/Square44x44Logo.png)
 
-If you're seeing this, you've probably already done this step. Congrats!
+</center>
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+An effortless kanban board to streamline your workflow with `suckless`, `minimal`, `powerful` and `feature rich` kanban board app. Drag-and-drop tasks, write extensive notes on tasks, and stay on top of your projects.
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+## Previews
+All Previews shown here is of installed PWA (Progressive Web App)
+![screenshot1](/src/lib/demo_assets/demo_dark.webp)
+![screenshot2](/src/lib/demo_assets/demo_light.webp)
 
-## Developing
+https://github.com/Tsuzat/kanban/assets/70003855/664f1f95-09e9-49ba-8da3-4f4c7c3865ae
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+## Installation
 
-```bash
-npm run dev
+If you want to run the app locally, you can clone the repository and run the following commands:
 
-# or start the server and open the app in a new browser tab
+```sh
+git clone https://github.com/Tsuzat/kanban
+cd kanban
+npm install
 npm run dev -- --open
 ```
 
-## Building
+You can also build the app and run it with the following commands:
 
-To create a production version of your app:
-
-```bash
+```sh
 npm run build
+npm run preview
 ```
 
-You can preview the production build with `npm run preview`.
+## Contributing
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are greatly appreciated.
