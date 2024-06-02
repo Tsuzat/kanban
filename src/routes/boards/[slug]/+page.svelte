@@ -17,7 +17,7 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { CirclePlus, Delete, VerticalDots, Download } from '$lib/icons';
 	import { toast } from 'svelte-sonner';
-	import { downloadAsJson, totalTasksInKanban } from '$lib/utils';
+	import { DeviceIsMobile, downloadAsJson, totalTasksInKanban } from '$lib/utils';
 	import {
 		generateSectionId,
 		generateTaskId,
@@ -39,6 +39,7 @@
 	import NewTask from '$lib/components/custom/boards/NewTask.svelte';
 	import GlobalPopUp from '$lib/components/custom/boards/GlobalPopUp.svelte';
 	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
 
 	export let data: PageData;
 
@@ -65,6 +66,22 @@
 	let continueText = '';
 	let isDestructive = false;
 	let onClick = () => {};
+
+	onMount(() => {
+		if (DeviceIsMobile()) {
+			console.log('Mobile Device Detected');
+			dragDisabled = true;
+			toast.success('Mobile Device Detected', {
+				description:
+					'Drag and Drop is disabled for mobile devices. Use menu options to move tasks.',
+				duration: 10000,
+				action: {
+					label: 'Ok',
+					onClick: () => {}
+				}
+			});
+		}
+	});
 
 	function createNewSection(e: any) {
 		if (kanban === null) return;
