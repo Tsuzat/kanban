@@ -1,0 +1,31 @@
+{
+	"short_name": "Kanban",
+	"name": "Kanban Boards",
+	"description": "A Kanban application focuses on simplicity, features and good UI/UX",
+	"icons": [
+		{
+			"src": "/icons/32x32.png",
+			"sizes": "32x32",
+			"type": "image/png"
+		},
+		{
+			"src": "/icons/Square44x44Logo.png",
+			"sizes": "44x44",
+			"type": "image/png"
+		},
+		{
+			"src": "/icons/Square310x310Logo.png",
+			"sizes": "310x310",
+			"type": "image/png"
+		}
+	],
+	"start_url": "/boards",
+	"background_color": "#3b82f6",
+	"display": "standalone",
+	"scope": "/boards",
+	"orientation": "any",
+	"display_override": ["fullscreen"],
+	"theme_color": "#3b82f6",
+	"dir": "ltr",
+	"lang": "en-US"
+}
