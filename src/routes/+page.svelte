@@ -5,10 +5,18 @@
 	import SpotLight from '$lib/components/custom/SpotLight.svelte';
 	import ToggleTheme from '$lib/components/custom/ToggleTheme.svelte';
 	import { Button } from '$lib/components/ui/button';
-	import { MoveRight } from '$lib/icons';
+	import { Moon, MoveRight, Sun } from '$lib/icons';
 	import { features } from './data';
 	import * as Card from '$lib/components/ui/card';
 	import { onMount } from 'svelte';
+	import { mode } from 'mode-watcher';
+	import { Switch } from '$lib/components/ui/switch';
+
+	import DemoImageDark from '$lib/demo_assets/demo_dark.webp?enhanced';
+	import DemoImageLight from '$lib/demo_assets/demo_light.webp?enhanced';
+	import DemoVideo from '$lib/demo_assets/demo_video.webm';
+
+	$: demoTheme = $mode === 'dark';
 
 	onMount(() => {
 		document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
@@ -54,7 +62,7 @@
 		</div>
 	</section>
 	<section
-		class="h-[calc(100dvh)] w-[90%] flex flex-col items-center justify-around sm:w-[55%] m-auto"
+		class="min-h-[calc(100dvh)] w-[90%] flex flex-col items-center justify-around sm:w-[55%] m-auto py-4"
 		id="features"
 	>
 		<div class="between-lines">Features</div>
@@ -85,6 +93,43 @@
 			{/each}
 		</div>
 	</section>
+	<section class="w-[90%] sm:w-[55%] m-auto py-4" id="demo">
+		<div class="between-lines my-8">Demo</div>
+		<div class="text-xl font-extrabold text-center text-muted-foreground my-8">
+			A simple screenshot of the PWA (Progressive Web App)
+		</div>
+		<div class="demo-images my-8">
+			<div class="toggle-demo-theme flex items-center justify-center w-full my-4">
+				<Sun class="size-4 mr-4" />
+				<Switch bind:checked={demoTheme} />
+				<Moon class="size-4 ml-4" />
+			</div>
+			<enhanced:img
+				src={DemoImageDark}
+				data-dark={demoTheme}
+				class="hidden data-[dark=true]:block border-muted border-2 rounded-lg"
+				alt="Demo Image Dark"
+			/>
+			<enhanced:img
+				src={DemoImageLight}
+				data-dark={demoTheme}
+				class="block data-[dark=true]:hidden border-muted border-2 rounded-lg"
+				alt="Demo Image Light"
+			/>
+		</div>
+		<div class="text-xl font-extrabold text-center text-muted-foreground my-8">
+			A Demo Video of the PWA (Progressive Web App)
+		</div>
+		<div class="demo-video my-8">
+			<video autoplay loop controls class="border-muted border-2 rounded-lg">
+				<source src={DemoVideo} type="video/webm" />
+				<track kind="captions" />
+			</video>
+		</div>
+	</section>
+	<div class="text-center text-sm">
+		Made with ❤️ by <a class="text-primary" href="https://tsuzat.com" target="_blank">Tsuzat</a>
+	</div>
 </div>
 
 <style>
