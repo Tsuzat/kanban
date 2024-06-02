@@ -1,13 +1,18 @@
 import { browser } from '$app/environment';
 import { writable } from 'svelte/store';
-import { type Kanban } from './localStore/types';
-import { kanbanFromJSON } from './localStore/utils';
+import { sampleKanban, type Kanban } from './localStore/types';
+import { kanbanFromJSON, saveKanbanLocally } from './localStore/utils';
 
 export const isNavbarCollapsed = writable(false);
 
 export const KANBANS = writable<Kanban[]>([]);
 
 if (browser) {
+	const tmpFirstTimeBootUp = localStorage.getItem('kanban-first-time-boot-up') ?? 'true';
+	if (tmpFirstTimeBootUp === 'true') {
+		localStorage.setItem('kanban-first-time-boot-up', 'false');
+		saveKanbanLocally(sampleKanban);
+	}
 	// get the navbar collapsed
 	const tmpCollapsed = localStorage.getItem('kanban-navbar-collapsed') ?? 'false';
 	isNavbarCollapsed.set(tmpCollapsed === 'true');
