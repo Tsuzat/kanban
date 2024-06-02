@@ -1,6 +1,12 @@
 import { browser } from '$app/environment';
 import type { Kanban } from './localStore/types';
 
+/**
+ * Downloads the given object as a JSON file with given name
+ * @param data Data Object to be Downloaded
+ * @param filename Filename
+ * @returns void
+ */
 export const downloadAsJson = (data: object, filename: string) => {
 	if (!browser) return;
 	// Format JSON nicely with 2 spaces indentation
@@ -37,6 +43,11 @@ export const parseToDos = (markdown: string): [number, number] => {
 	return [totalTodos, completedTodos];
 };
 
+/**
+ * Returns the total tasks and completed tasks in a kanban
+ * @param kanban Kanban object
+ * @returns Total number of tasks in the kanban
+ */
 export const totalTasksInKanban = (kanban: Kanban): number => {
 	let totalTasks = 0;
 	for (const sec of kanban.sections) {
