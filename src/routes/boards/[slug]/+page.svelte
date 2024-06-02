@@ -35,6 +35,7 @@
 	import { writable } from 'svelte/store';
 	import NewSection from '$lib/components/custom/boards/NewSection.svelte';
 	import TodosInNotes from '$lib/components/custom/boards/TodosInNotes.svelte';
+	import TaskSheet from '$lib/components/custom/boards/TaskSheet.svelte';
 	import NewTask from '$lib/components/custom/boards/NewTask.svelte';
 	import GlobalPopUp from '$lib/components/custom/boards/GlobalPopUp.svelte';
 	import { goto } from '$app/navigation';
@@ -47,6 +48,7 @@
 	// Related to Open Different PopUps
 	let openAddNewSection = writable(false);
 	let openAddNewTask = writable(false);
+	let openTaskSheet = writable(false);
 
 	// To Update Current Section and Task
 	let currentSectionContext: Section | null = null;
@@ -162,10 +164,25 @@
 		saveKanbanLocally($kanban);
 		kanban.set($kanban);
 	}
+
+	function handleTaskSheetCallback(e: any) {
+		let { task } = e.detail as { task: Task };
+		currentTaskContext = task;
+		saveKanbanLocally($kanban);
+		kanban.set($kanban);
+	}
 </script>
+
+<svelte:head>
+	<title>Board | {$kanban.title}</title>
+</svelte:head>
 
 <NewSection open={openAddNewSection} on:callback={createNewSection} />
 <NewTask open={openAddNewTask} on:callback={createNewTask} />
+
+{#if currentTaskContext}
+	<TaskSheet open={openTaskSheet} task={currentTaskContext} on:callback={handleTaskSheetCallback} />
+{/if}
 <GlobalPopUp
 	open={openGlobalPopUp}
 	{alertTitle}
@@ -321,8 +338,8 @@
 													size="icon"
 													class="scale-100 transition-all group-hover:scale-100 sm:scale-0"
 													on:click={() => {
-														// currentTaskContext = task;
-														// openTask.set(true);
+														currentTaskContext = task;
+														openTaskSheet.set(true);
 													}}
 												>
 													<Edit class="size-4" />
