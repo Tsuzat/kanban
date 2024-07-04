@@ -21,3 +21,4 @@ export { default as ArrowUpAndDown } from 'lucide-svelte/icons/arrow-up-down';
 export { default as ChevronsUp } from 'lucide-svelte/icons/chevrons-up';
 export { default as ChevronsDown } from 'lucide-svelte/icons/chevrons-down';
 export { default as ArrowLeftAndRight } from 'lucide-svelte/icons/arrow-left-right';
+export { default as GitHub } from 'lucide-svelte/icons/github';

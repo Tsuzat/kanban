@@ -5,7 +5,7 @@
 	import SpotLight from '$lib/components/custom/SpotLight.svelte';
 	import ToggleTheme from '$lib/components/custom/ToggleTheme.svelte';
 	import { Button } from '$lib/components/ui/button';
-	import { Moon, MoveRight, Sun } from '$lib/icons';
+	import { GitHub, Moon, MoveRight, Sun } from '$lib/icons';
 	import { features } from './data';
 	import * as Card from '$lib/components/ui/card';
 	import { onMount } from 'svelte';
@@ -34,6 +34,17 @@
 	<Particles />
 	<div class="fixed right-0 top-0">
 		<ToggleTheme />
+	</div>
+	<div class="fixed left-0 top-0">
+		<Button
+			size="icon"
+			variant="link"
+			class="text-white hover:bg-muted"
+			href="https://github.com/Tsuzat/kanban"
+			target="_blank"
+		>
+			<GitHub class="size-5" />
+		</Button>
 	</div>
 	<SpotLight />
 	<div class="logo relative"></div>
