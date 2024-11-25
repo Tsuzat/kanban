@@ -281,9 +281,12 @@
 										}
 										alertTitle = 'Are you sure?';
 										alertDescription =
-											'Importing this JSON will overwrite the current Project. Do you still want to import this?';
+											'Importing this JSON will overwrite the current Project.';
 										continueText = 'Confirm overwrite';
 										isDestructive = true;
+										//modify kanbanObject to have the same id and title as the current kanban
+										kanbanObject.id = $kanban.id;
+										kanbanObject.title = $kanban.title;
 										onClick = () => {
 											saveKanbanLocally(kanbanObject);
 											kanban.set(kanbanObject);
