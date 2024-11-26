@@ -1,5 +1,6 @@
 import { browser } from '$app/environment';
-import type { Kanban } from './localStore/types';
+import { TaskPriority, type Kanban } from './localStore/types';
+import { z } from 'zod';
 
 /**
  * Downloads the given object as a JSON file with given name
@@ -20,6 +21,97 @@ export const downloadAsJson = (data: object, filename: string) => {
 	anchorElement.click();
 
 	document.body.removeChild(anchorElement); // Cleanup after download
+};
+
+/**
+ * Uploads a JSON file and returns the parsed object
+ * @returns Parsed JSON object
+ * @returns null if no file is selected
+ * @returns null if file is not a valid JSON
+ */
+
+export const uploadJson = async (): Promise<object | null> => {
+	if (!browser) return null;
+	const fileInput = document.createElement('input');
+	fileInput.type = 'file';
+	fileInput.accept = '.json';
+	fileInput.style.display = 'none'; // Hide the file input
+
+	document.body.appendChild(fileInput);
+	fileInput.click();
+	const file = await new Promise<File | null>((resolve) => {
+		fileInput.onchange = () => {
+			resolve(fileInput.files?.item(0) ?? null);
+		};
+	});
+
+	document.body.removeChild(fileInput); // Cleanup after file selection
+
+	if (!file) return null;
+
+	const fileReader = new FileReader();
+	fileReader.readAsText(file);
+	return await new Promise<object | null>((resolve) => {
+		fileReader.onload = () => {
+			let data;
+			try {
+				data = JSON.parse(fileReader.result as string);
+			} catch (error) {
+				resolve(null);
+			}
+			resolve(data);
+		};
+	});
+};
+
+/**
+ * Validates the given object as a kanban object, if invalid returns error
+ * @param data Data to be validated
+ * @returns Kanban object if valid
+ * @returns Error object if invalid
+ */
+export const validateKanban = (data: unknown): Kanban | Error => {
+	const formatZodErrors = (error: z.ZodError): string[] => {
+		return error.errors.map((err) => {
+			const path = err.path.join('.');
+			const field = path.split('.').pop(); // Get the last part of the path (the field name)
+			return `Expected '${field}' in '${path.replace(`.${field}`, '') || 'root'}'`;
+		});
+	};
+	const kanbanSchema = z.object({
+		id: z.string(),
+		icon: z.string(),
+		title: z.string(),
+		sections: z.array(
+			z.object({
+				id: z.string(),
+				title: z.string(),
+				color: z.string(),
+				tasks: z.array(
+					z.object({
+						id: z.string(),
+						title: z.string(),
+						description: z.string(),
+						dueDate: z.string(),
+						priority: z.nativeEnum(TaskPriority),
+						notes: z.string()
+					})
+				)
+			})
+		)
+	});
+
+	try {
+		const kanban = kanbanSchema.parse(data);
+		return kanban;
+	} catch (err) {
+		console.log(err);
+		if (err instanceof z.ZodError) {
+			return new Error(formatZodErrors(err).join('\n'));
+		} else {
+			return new Error('Unknown error occurred');
+		}
+	}
 };
 
 /**

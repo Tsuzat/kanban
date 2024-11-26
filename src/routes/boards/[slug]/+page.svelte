@@ -15,9 +15,9 @@
 	import { dndzone } from 'svelte-dnd-action';
 	import { flip } from 'svelte/animate';
 	import { Button } from '$lib/components/ui/button/index.js';
-	import { CirclePlus, Delete, VerticalDots, Download } from '$lib/icons';
+	import { CirclePlus, Delete, VerticalDots, Download, Upload } from '$lib/icons';
 	import { toast } from 'svelte-sonner';
-	import { DeviceIsMobile, downloadAsJson, totalTasksInKanban } from '$lib/utils';
+	import { DeviceIsMobile, downloadAsJson, totalTasksInKanban, uploadJson, validateKanban } from '$lib/utils';
 	import {
 		generateSectionId,
 		generateTaskId,
@@ -40,6 +40,7 @@
 	import GlobalPopUp from '$lib/components/custom/boards/GlobalPopUp.svelte';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import { Kanban } from 'lucide-svelte';
 
 	export let data: PageData;
 
@@ -253,6 +254,56 @@
 							>
 								<Download class="mr-2 size-4" />
 								<span>Download as JSON</span>
+							</DropdownMenu.Item>
+							<DropdownMenu.Item
+								on:click={() => {
+									uploadJson().then((data) => {
+										if (!data) {
+											toast.error('Invalid JSON', {
+												description: 'The JSON file is invalid or empty.',
+												action: {
+													label: 'Ok',
+													onClick: () => {}
+												}
+											});
+											return;
+										}
+										const kanbanObject = validateKanban(data);
+										if (kanbanObject instanceof Error) {
+											toast.error('Invalid JSON', {
+												description: kanbanObject.message,
+												action: {
+													label: 'Ok',
+													onClick: () => {}
+												}
+											});
+											return;
+										}
+										alertTitle = 'Are you sure?';
+										alertDescription =
+											'Importing this JSON will overwrite the current Project.';
+										continueText = 'Confirm overwrite';
+										isDestructive = true;
+										//modify kanbanObject to have the same id and title as the current kanban
+										kanbanObject.id = $kanban.id;
+										kanbanObject.title = $kanban.title;
+										onClick = () => {
+											saveKanbanLocally(kanbanObject);
+											kanban.set(kanbanObject);
+											toast.success('Imported Successfully', {
+												description: 'The JSON file has been imported successfully.',
+												action: {
+													label: 'Ok',
+													onClick: () => {}
+												}
+											});
+										};
+										openGlobalPopUp.set(true);
+									});
+								}}
+							>
+								<Upload class="mr-2 size-4" />
+								<span>Import from JSON</span>
 							</DropdownMenu.Item>
 							<DropdownMenu.Sub>
 								<DropdownMenu.SubTrigger

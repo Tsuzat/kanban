@@ -16,6 +16,7 @@ export { default as CirclePlus } from 'lucide-svelte/icons/circle-plus';
 export { default as Delete } from 'lucide-svelte/icons/trash-2';
 export { default as VerticalDots } from 'lucide-svelte/icons/ellipsis-vertical';
 export { default as Download } from 'lucide-svelte/icons/download';
+export { default as Upload } from 'lucide-svelte/icons/upload';
 export { default as Edit } from 'lucide-svelte/icons/pencil';
 export { default as ArrowUpAndDown } from 'lucide-svelte/icons/arrow-up-down';
 export { default as ChevronsUp } from 'lucide-svelte/icons/chevrons-up';
