@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Separator } from '$lib/components/ui/separator/index.js';
@@ -16,10 +18,13 @@
 	import Logo from '$lib/components/custom/Logo.svelte';
 	import NewKanban from './NewKanban.svelte';
 
-	$: isCollapsed = $isNavbarCollapsed;
+	let isCollapsed;
+	run(() => {
+		isCollapsed = $isNavbarCollapsed;
+	});
 
 	// for mobile view
-	let mobile = false;
+	let mobile = $state(false);
 
 	let open: Writable<boolean> = writable<boolean>(false);
 
@@ -27,7 +32,7 @@
 		open.set(!$open);
 	}
 
-	$: boards = $KANBANS;
+	let boards = $derived($KANBANS);
 
 	const togglePanel = () => {
 		isCollapsed = !isCollapsed;
@@ -64,19 +69,21 @@
 		<ToggleTheme />
 
 		<Tooltip.Root openDelay={0}>
-			<Tooltip.Trigger asChild let:builder>
-				<Button
-					builders={[builder]}
-					variant="ghost"
-					size="icon"
-					data-collapsed={isCollapsed}
-					class="hidden transition-all data-[collapsed=true]:rotate-180 md:inline-flex md:items-center md:justify-center"
-					on:click={togglePanel}
-				>
-					<ClosePanel class="size-4" aria-hidden="true" />
-					<span class="sr-only"> {isCollapsed ? 'Open' : 'Close'} Panel </span>
-				</Button>
-			</Tooltip.Trigger>
+			<Tooltip.Trigger asChild >
+				{#snippet children({ builder })}
+								<Button
+						builders={[builder]}
+						variant="ghost"
+						size="icon"
+						data-collapsed={isCollapsed}
+						class="hidden transition-all data-[collapsed=true]:rotate-180 md:inline-flex md:items-center md:justify-center"
+						on:click={togglePanel}
+					>
+						<ClosePanel class="size-4" aria-hidden="true" />
+						<span class="sr-only"> {isCollapsed ? 'Open' : 'Close'} Panel </span>
+					</Button>
+											{/snippet}
+						</Tooltip.Trigger>
 			<Tooltip.Content side="right" class="item-center flex gap-4"
 				>{isCollapsed ? 'Open' : 'Close'} Panel
 			</Tooltip.Content>
@@ -110,26 +117,28 @@
 			{#each boards as board}
 				{#if isCollapsed}
 					<Tooltip.Root openDelay={0}>
-						<Tooltip.Trigger asChild let:builder>
-							<Button
-								href={`/boards/${board.id}`}
-								builders={[builder]}
-								variant="ghost"
-								size="icon"
-								class={cn(
-									$page.url.pathname === `/boards/${board.id}` &&
-										'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white'
-								)}
-							>
-								<!-- <Home class="size-4" aria-hidden="true" /> -->
-								<svelte:component
-									this={project_icons[board.icon] ?? Folder}
-									class="size-4"
-									aria-hidden="true"
-								/>
-								<span class="sr-only">{board.title}</span>
-							</Button>
-						</Tooltip.Trigger>
+						<Tooltip.Trigger asChild >
+							{#snippet children({ builder })}
+														<Button
+									href={`/boards/${board.id}`}
+									builders={[builder]}
+									variant="ghost"
+									size="icon"
+									class={cn(
+										$page.url.pathname === `/boards/${board.id}` &&
+											'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white'
+									)}
+								>
+									<!-- <Home class="size-4" aria-hidden="true" /> -->
+									{@const SvelteComponent = project_icons[board.icon] ?? Folder}
+								<SvelteComponent
+										class="size-4"
+										aria-hidden="true"
+									/>
+									<span class="sr-only">{board.title}</span>
+								</Button>
+																				{/snippet}
+												</Tooltip.Trigger>
 						<Tooltip.Content side="right" class="item-center flex">{board.title}</Tooltip.Content>
 					</Tooltip.Root>
 				{:else}
@@ -141,8 +150,8 @@
 							'bg-muted hover:bg-muted': $page.url.pathname === `/boards/${board.id}`
 						})}
 					>
-						<svelte:component
-							this={project_icons[board.icon] ?? Folder}
+						{@const SvelteComponent_1 = project_icons[board.icon] ?? Folder}
+						<SvelteComponent_1
 							class="mr-4 size-5"
 							aria-hidden="true"
 						/>
@@ -155,12 +164,14 @@
 	<Separator />
 	{#if isCollapsed}
 		<Tooltip.Root openDelay={0}>
-			<Tooltip.Trigger asChild let:builder>
-				<Button builders={[builder]} size="icon" on:click={toggleOpen} class="my-4">
-					<Plus class="size-4" aria-hidden="true" />
-					<span class="sr-only">Add New Project</span>
-				</Button>
-			</Tooltip.Trigger>
+			<Tooltip.Trigger asChild >
+				{#snippet children({ builder })}
+								<Button builders={[builder]} size="icon" on:click={toggleOpen} class="my-4">
+						<Plus class="size-4" aria-hidden="true" />
+						<span class="sr-only">Add New Project</span>
+					</Button>
+											{/snippet}
+						</Tooltip.Trigger>
 			<Tooltip.Content side="right" class="item-center flex gap-4">Add New Project</Tooltip.Content>
 		</Tooltip.Root>
 	{:else}

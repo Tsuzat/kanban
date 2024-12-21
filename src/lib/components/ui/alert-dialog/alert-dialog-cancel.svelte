@@ -6,16 +6,24 @@
 	type $$Props = AlertDialogPrimitive.CancelProps;
 	type $$Events = AlertDialogPrimitive.CancelEvents;
 
-	let className: $$Props["class"] = undefined;
-	export { className as class };
+	interface Props {
+		class?: $$Props["class"];
+		children?: import('svelte').Snippet<[any]>;
+		[key: string]: any
+	}
+
+	let { class: className = undefined, children, ...rest }: Props = $props();
+	
 </script>
 
 <AlertDialogPrimitive.Cancel
 	class={cn(buttonVariants({ variant: "outline" }), "mt-2 sm:mt-0", className)}
-	{...$$restProps}
+	{...rest}
 	on:click
 	on:keydown
-	let:builder
+	
 >
-	<slot {builder} />
+	{#snippet children({ builder })}
+		{@render children?.({ builder, })}
+	{/snippet}
 </AlertDialogPrimitive.Cancel>

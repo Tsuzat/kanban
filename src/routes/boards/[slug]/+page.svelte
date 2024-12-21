@@ -42,10 +42,14 @@
 	import { onMount } from 'svelte';
 	import { Kanban } from 'lucide-svelte';
 
-	export let data: PageData;
+	interface Props {
+		data: PageData;
+	}
 
-	$: kanban = data.kanban;
-	$: totalTasks = totalTasksInKanban($kanban);
+	let { data }: Props = $props();
+
+	let kanban = $derived(data.kanban);
+	let totalTasks = $derived(totalTasksInKanban($kanban));
 
 	// Related to Open Different PopUps
 	let openAddNewSection = writable(false);
@@ -53,20 +57,20 @@
 	let openTaskSheet = writable(false);
 
 	// To Update Current Section and Task
-	let currentSectionContext: Section | null = null;
-	let currentTaskContext: Task | null = null;
+	let currentSectionContext: Section | null = $state(null);
+	let currentTaskContext: Task | null = $state(null);
 
 	// Related to Drag and Drop
 	let flipDurationMs = 200;
-	let dragDisabled = false;
+	let dragDisabled = $state(false);
 
 	// Global PopUp Related
 	let openGlobalPopUp = writable(false);
-	let alertTitle = '';
-	let alertDescription = '';
-	let continueText = '';
-	let isDestructive = false;
-	let onClick = () => {};
+	let alertTitle = $state('');
+	let alertDescription = $state('');
+	let continueText = $state('');
+	let isDestructive = $state(false);
+	let onClick = $state(() => {});
 
 	onMount(() => {
 		if (DeviceIsMobile()) {
@@ -227,11 +231,13 @@
 					<span class="ml-2 text-white">Section</span>
 				</Button>
 				<DropdownMenu.Root>
-					<DropdownMenu.Trigger asChild let:builder>
-						<Button builders={[builder]} variant="outline" size="icon">
-							<VerticalDots class="size-4" aria-hidden="true" />
-						</Button>
-					</DropdownMenu.Trigger>
+					<DropdownMenu.Trigger asChild >
+						{#snippet children({ builder })}
+												<Button builders={[builder]} variant="outline" size="icon">
+								<VerticalDots class="size-4" aria-hidden="true" />
+							</Button>
+																	{/snippet}
+										</DropdownMenu.Trigger>
 					<DropdownMenu.Content class="w-44">
 						<DropdownMenu.Label>Quick Actions</DropdownMenu.Label>
 						<DropdownMenu.Separator />
@@ -384,8 +390,8 @@
 								borderRadius: '5px'
 							}
 						}}
-						on:consider={(e) => handleDndConsiderTasks(section.id, e)}
-						on:finalize={(e) => handleDndFinalizeTasks(section.id, e)}
+						onconsider={(e) => handleDndConsiderTasks(section.id, e)}
+						onfinalize={(e) => handleDndFinalizeTasks(section.id, e)}
 					>
 						{#each section.tasks as task (task.id)}
 							<div animate:flip={{ duration: flipDurationMs }} class="outline-none">
@@ -413,11 +419,13 @@
 													<Edit class="size-4" />
 												</Button>
 												<DropdownMenu.Root>
-													<DropdownMenu.Trigger asChild let:builder>
-														<Button builders={[builder]} variant="ghost" size="icon">
-															<VerticalDots class="size-4" aria-hidden="true" />
-														</Button>
-													</DropdownMenu.Trigger>
+													<DropdownMenu.Trigger asChild >
+														{#snippet children({ builder })}
+																												<Button builders={[builder]} variant="ghost" size="icon">
+																<VerticalDots class="size-4" aria-hidden="true" />
+															</Button>
+																																									{/snippet}
+																										</DropdownMenu.Trigger>
 													<DropdownMenu.Content class="w-44">
 														<DropdownMenu.Group>
 															<DropdownMenu.Item

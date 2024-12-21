@@ -2,13 +2,24 @@
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import { cn } from '$lib/components/utils';
 	import { type Writable } from 'svelte/store';
-	export let alertTitle: string;
-	export let alertDescription: string;
-	export let continueText: string;
-	export let isDestructive: boolean;
-	export let onClick: () => void;
 
-	export let open: Writable<boolean>;
+	interface Props {
+		alertTitle: string;
+		alertDescription: string;
+		continueText: string;
+		isDestructive: boolean;
+		onClick: () => void;
+		open: Writable<boolean>;
+	}
+
+	let {
+		alertTitle,
+		alertDescription,
+		continueText,
+		isDestructive,
+		onClick,
+		open
+	}: Props = $props();
 </script>
 
 <AlertDialog.Root bind:open={$open}>

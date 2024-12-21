@@ -6,11 +6,15 @@
 	import { Input } from '$lib/components/ui/input';
 	import { createEventDispatcher } from 'svelte';
 
-	export let open: Writable<boolean>;
+	interface Props {
+		open: Writable<boolean>;
+	}
+
+	let { open }: Props = $props();
 	const dispatch = createEventDispatcher();
 
-	let title: string = 'To Do';
-	let color: string = '00FF00';
+	let title: string = $state('To Do');
+	let color: string = $state('00FF00');
 
 	const randomColors: string[] = [
 		'FF0000',

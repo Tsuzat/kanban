@@ -1,17 +1,21 @@
 <script lang="ts">
-	export let showTitle = false;
-	export let size = 2.5;
-	export let href = '/';
+	interface Props {
+		showTitle?: boolean;
+		size?: number;
+		href?: string;
+	}
+
+	let { showTitle = false, size = 2.5, href = '/' }: Props = $props();
 </script>
 
 <a class="logo flex items-center" {href}>
 	<div class="relative" style={`width: ${size}rem; height: ${size}rem`}>
 		<div class="rect"></div>
 		<div class="rect blur-rect"></div>
-		<div class="beta absolute z-[2] text-[0.5rem]">BETA</div>
+		<div class="beta absolute z-[2] text-[0.5rem]">JONBON</div>
 	</div>
 	{#if showTitle}
-		<span class="text-xl font-semibold ml-4">Kanban</span>
+		<span class="text-xl font-semibold ml-4">JONBON</span>
 	{/if}
 </a>
 

@@ -31,17 +31,21 @@
 		dateStyle: 'long'
 	});
 
-	export let task: Task;
-	export let open: Writable<boolean>;
+	interface Props {
+		task: Task;
+		open: Writable<boolean>;
+	}
+
+	let { task = $bindable(), open }: Props = $props();
 
 	let dateArray = task.dueDate.split('-');
 
-	let value = new CalendarDate(
+	let value = $state(new CalendarDate(
 		parseInt(dateArray[0]),
 		parseInt(dateArray[1]),
 		parseInt(dateArray[2])
-	);
-	$: dueDate = value.toString();
+	));
+	let dueDate = $derived(value.toString());
 
 	function onChange() {
 		task.dueDate = dueDate;
@@ -85,19 +89,21 @@
 			<div class="grid grid-cols-4 items-center">
 				<Label for="date" class="0 text-left">Due Date</Label>
 				<Popover.Root>
-					<Popover.Trigger asChild let:builder>
-						<Button
-							variant="outline"
-							class={cn(
-								'w-[10rem] justify-start text-left font-normal',
-								!dueDate && 'text-muted-foreground'
-							)}
-							builders={[builder]}
-						>
-							<CalendarIcon class="mr-2 h-4 w-4" />
-							{value ? df.format(value.toDate(getLocalTimeZone())) : 'Pick a date'}
-						</Button>
-					</Popover.Trigger>
+					<Popover.Trigger asChild >
+						{#snippet children({ builder })}
+												<Button
+								variant="outline"
+								class={cn(
+									'w-[10rem] justify-start text-left font-normal',
+									!dueDate && 'text-muted-foreground'
+								)}
+								builders={[builder]}
+							>
+								<CalendarIcon class="mr-2 h-4 w-4" />
+								{value ? df.format(value.toDate(getLocalTimeZone())) : 'Pick a date'}
+							</Button>
+																	{/snippet}
+										</Popover.Trigger>
 					<Popover.Content class="w-auto p-0">
 						<Calendar bind:value initialFocus />
 					</Popover.Content>
@@ -120,9 +126,11 @@
 		</div>
 		<Sheet.Footer class="mt-4">
 			<Button on:click={onChange} size="lg" class="my-2 sm:my-0">Save Changes</Button>
-			<Sheet.Close asChild let:builder>
-				<Button builders={[builder]} variant="outline" size="lg">Cancel</Button>
-			</Sheet.Close>
+			<Sheet.Close asChild >
+				{#snippet children({ builder })}
+								<Button builders={[builder]} variant="outline" size="lg">Cancel</Button>
+											{/snippet}
+						</Sheet.Close>
 		</Sheet.Footer>
 	</Sheet.Content>
 </Sheet.Root>

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { mode } from 'mode-watcher';
 
-	$: dark = $mode === 'dark';
+	let dark = $derived($mode === 'dark');
 </script>
 
 <div class="spotlight" class:dark>

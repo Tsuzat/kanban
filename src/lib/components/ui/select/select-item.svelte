@@ -6,11 +6,24 @@
 	type $$Props = SelectPrimitive.ItemProps;
 	type $$Events = Required<SelectPrimitive.ItemEvents>;
 
-	let className: $$Props["class"] = undefined;
-	export let value: $$Props["value"];
-	export let label: $$Props["label"] = undefined;
-	export let disabled: $$Props["disabled"] = undefined;
-	export { className as class };
+	interface Props {
+		class?: $$Props["class"];
+		value: $$Props["value"];
+		label?: $$Props["label"];
+		disabled?: $$Props["disabled"];
+		children?: import('svelte').Snippet;
+		[key: string]: any
+	}
+
+	let {
+		class: className = undefined,
+		value,
+		label = undefined,
+		disabled = undefined,
+		children,
+		...rest
+	}: Props = $props();
+	
 </script>
 
 <SelectPrimitive.Item
@@ -21,7 +34,7 @@
 		"relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground data-[disabled]:opacity-50",
 		className
 	)}
-	{...$$restProps}
+	{...rest}
 	on:click
 	on:pointermove
 	on:focusin
@@ -31,7 +44,7 @@
 			<Check class="h-4 w-4" />
 		</SelectPrimitive.ItemIndicator>
 	</span>
-	<slot>
+	{#if children}{@render children()}{:else}
 		{label || value}
-	</slot>
+	{/if}
 </SelectPrimitive.Item>

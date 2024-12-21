@@ -7,11 +7,17 @@
 		variant?: Variant;
 	};
 
-	let className: $$Props["class"] = undefined;
-	export let variant: $$Props["variant"] = "default";
-	export { className as class };
+	interface Props {
+		class?: $$Props["class"];
+		variant?: $$Props["variant"];
+		children?: import('svelte').Snippet;
+		[key: string]: any
+	}
+
+	let { class: className = undefined, variant = "default", children, ...rest }: Props = $props();
+	
 </script>
 
-<div class={cn(alertVariants({ variant }), className)} {...$$restProps} role="alert">
-	<slot />
+<div class={cn(alertVariants({ variant }), className)} {...rest} role="alert">
+	{@render children?.()}
 </div>

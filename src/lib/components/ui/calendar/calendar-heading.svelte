@@ -4,16 +4,24 @@
 
 	type $$Props = CalendarPrimitive.HeadingProps;
 
-	let className: string | undefined | null = undefined;
-	export { className as class };
+	interface Props {
+		class?: string | undefined | null;
+		children?: import('svelte').Snippet<[any]>;
+		[key: string]: any
+	}
+
+	let { class: className = undefined, children, ...rest }: Props = $props();
+	
 </script>
 
 <CalendarPrimitive.Heading
-	let:headingValue
+	
 	class={cn("text-sm font-medium", className)}
-	{...$$restProps}
+	{...rest}
 >
-	<slot {headingValue}>
-		{headingValue}
-	</slot>
+	{#snippet children({ headingValue })}
+		{#if children}{@render children({ headingValue, })}{:else}
+			{headingValue}
+		{/if}
+	{/snippet}
 </CalendarPrimitive.Heading>

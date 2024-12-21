@@ -2,9 +2,13 @@
 	import { parseToDos } from '$lib/utils';
 	import { Progress } from '$lib/components/ui/progress/index.js';
 
-	export let markdown: string;
+	interface Props {
+		markdown: string;
+	}
 
-	$: [max, value] = parseToDos(markdown);
+	let { markdown }: Props = $props();
+
+	let [max, value] = $derived(parseToDos(markdown));
 </script>
 
 {#if max}

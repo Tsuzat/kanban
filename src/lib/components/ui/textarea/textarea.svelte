@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { createBubbler } from 'svelte/legacy';
+
+	const bubble = createBubbler();
 	import type { HTMLTextareaAttributes } from "svelte/elements";
 	import type { TextareaEvents } from "./index.js";
 	import { cn } from "$lib/components/utils.js";
@@ -6,13 +9,18 @@
 	type $$Props = HTMLTextareaAttributes;
 	type $$Events = TextareaEvents;
 
-	let className: $$Props["class"] = undefined;
-	export let value: $$Props["value"] = undefined;
-	export { className as class };
+	
 
 	// Workaround for https://github.com/sveltejs/svelte/issues/9305
 	// Fixed in Svelte 5, but not backported to 4.x.
-	export let readonly: $$Props["readonly"] = undefined;
+	interface Props {
+		class?: $$Props["class"];
+		value?: $$Props["value"];
+		readonly?: $$Props["readonly"];
+		[key: string]: any
+	}
+
+	let { class: className = undefined, value = $bindable(undefined), readonly = undefined, ...rest }: Props = $props();
 </script>
 
 <textarea
@@ -22,17 +30,17 @@
 	)}
 	bind:value
 	{readonly}
-	on:blur
-	on:change
-	on:click
-	on:focus
-	on:keydown
-	on:keypress
-	on:keyup
-	on:mouseover
-	on:mouseenter
-	on:mouseleave
-	on:paste
-	on:input
-	{...$$restProps}
+	onblur={bubble('blur')}
+	onchange={bubble('change')}
+	onclick={bubble('click')}
+	onfocus={bubble('focus')}
+	onkeydown={bubble('keydown')}
+	onkeypress={bubble('keypress')}
+	onkeyup={bubble('keyup')}
+	onmouseover={bubble('mouseover')}
+	onmouseenter={bubble('mouseenter')}
+	onmouseleave={bubble('mouseleave')}
+	onpaste={bubble('paste')}
+	oninput={bubble('input')}
+	{...rest}
 ></textarea>

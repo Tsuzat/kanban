@@ -4,15 +4,20 @@
 
 	type $$Props = ProgressPrimitive.Props;
 
-	let className: $$Props["class"] = undefined;
-	export let max: $$Props["max"] = 100;
-	export let value: $$Props["value"] = undefined;
-	export { className as class };
+	interface Props {
+		class?: $$Props["class"];
+		max?: $$Props["max"];
+		value?: $$Props["value"];
+		[key: string]: any
+	}
+
+	let { class: className = undefined, max = 100, value = undefined, ...rest }: Props = $props();
+	
 </script>
 
 <ProgressPrimitive.Root
 	class={cn("relative h-2 w-full overflow-hidden rounded-full bg-primary/20", className)}
-	{...$$restProps}
+	{...rest}
 >
 	<div
 		class="h-full w-full flex-1 bg-primary transition-all"

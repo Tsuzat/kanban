@@ -3,13 +3,19 @@
 	import '../app.css';
 	import { ModeWatcher } from 'mode-watcher';
 	import { Toaster } from '$lib/components/ui/sonner';
+	import Footer from '$lib/components/custom/Footer.svelte';
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
+
+	let { children }: Props = $props();
 </script>
 
 <svelte:head>
-	<title>Kanban Board App - Organize Your Tasks Efficientl</title>
+	<title>Jonbon - Organize Your Stuff</title>
 </svelte:head>
 
 <ModeWatcher />
 <Toaster />
-
-<slot />
+{@render children?.()}
+<Footer />

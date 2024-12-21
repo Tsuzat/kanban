@@ -18,7 +18,11 @@
 	import { Calendar } from '$lib/components/ui/calendar';
 	import * as Select from '$lib/components/ui/select';
 
-	export let open: Writable<boolean>;
+	interface Props {
+		open: Writable<boolean>;
+	}
+
+	let { open }: Props = $props();
 	const dispatch = createEventDispatcher();
 
 	const df = new DateFormatter('en-US', {
@@ -30,12 +34,12 @@
 	let month = today.getMonth() + 1;
 	let day = today.getDate();
 
-	let title: string = '';
-	let description: string = '';
-	let value: DateValue = new CalendarDate(year, month, day);
-	let priority: TaskPriority = TaskPriority.LOW;
+	let title: string = $state('');
+	let description: string = $state('');
+	let value: DateValue = $state(new CalendarDate(year, month, day));
+	let priority: TaskPriority = $state(TaskPriority.LOW);
 
-	$: dueDate = value?.toString();
+	let dueDate = $derived(value?.toString());
 
 	let priorities = [TaskPriority.LOW, TaskPriority.MEDIUM, TaskPriority.HIGH];
 
@@ -66,19 +70,21 @@
 			<div class="grid grid-cols-4 items-center gap-4">
 				<Label for="date" class="0 text-right">Due Date</Label>
 				<Popover.Root>
-					<Popover.Trigger asChild let:builder>
-						<Button
-							variant="outline"
-							class={cn(
-								'w-[280px] justify-start text-left font-normal',
-								!dueDate && 'text-muted-foreground'
-							)}
-							builders={[builder]}
-						>
-							<CalendarIcon class="mr-2 h-4 w-4" />
-							{value ? df.format(value.toDate(getLocalTimeZone())) : 'Pick a date'}
-						</Button>
-					</Popover.Trigger>
+					<Popover.Trigger asChild >
+						{#snippet children({ builder })}
+												<Button
+								variant="outline"
+								class={cn(
+									'w-[280px] justify-start text-left font-normal',
+									!dueDate && 'text-muted-foreground'
+								)}
+								builders={[builder]}
+							>
+								<CalendarIcon class="mr-2 h-4 w-4" />
+								{value ? df.format(value.toDate(getLocalTimeZone())) : 'Pick a date'}
+							</Button>
+																	{/snippet}
+										</Popover.Trigger>
 					<Popover.Content class="w-auto p-0">
 						<Calendar bind:value initialFocus />
 					</Popover.Content>

@@ -6,10 +6,22 @@
 	type $$Props = CalendarPrimitive.DayProps;
 	type $$Events = CalendarPrimitive.DayEvents;
 
-	export let date: $$Props["date"];
-	export let month: $$Props["month"];
-	let className: $$Props["class"] = undefined;
-	export { className as class };
+	interface Props {
+		date: $$Props["date"];
+		month: $$Props["month"];
+		class?: $$Props["class"];
+		children?: import('svelte').Snippet<[any]>;
+		[key: string]: any
+	}
+
+	let {
+		date,
+		month,
+		class: className = undefined,
+		children,
+		...rest
+	}: Props = $props();
+	
 </script>
 
 <CalendarPrimitive.Day
@@ -31,13 +43,15 @@
 		"data-[outside-month]:pointer-events-none data-[outside-month]:text-muted-foreground data-[outside-month]:opacity-50 [&[data-outside-month][data-selected]]:bg-accent/50 [&[data-outside-month][data-selected]]:text-muted-foreground [&[data-outside-month][data-selected]]:opacity-30",
 		className
 	)}
-	{...$$restProps}
-	let:selected
-	let:disabled
-	let:unavailable
-	let:builder
+	{...rest}
+	
+	
+	
+	
 >
-	<slot {selected} {disabled} {unavailable} {builder}>
-		{date.day}
-	</slot>
+	{#snippet children({ selected, disabled, unavailable, builder })}
+		{#if children}{@render children({ selected, disabled, unavailable, builder, })}{:else}
+			{date.day}
+		{/if}
+	{/snippet}
 </CalendarPrimitive.Day>

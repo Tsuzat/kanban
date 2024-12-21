@@ -1,7 +1,9 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import GlowingButton from '$lib/components/custom/GlowingButton.svelte';
 	import Logo from '$lib/components/custom/Logo.svelte';
-	import Particles from '$lib/components/custom/Particles.svelte';
+	// import Particles from '$lib/components/custom/Particles.svelte';
 	import SpotLight from '$lib/components/custom/SpotLight.svelte';
 	import ToggleTheme from '$lib/components/custom/ToggleTheme.svelte';
 	import { Button } from '$lib/components/ui/button';
@@ -16,7 +18,10 @@
 	import DemoImageLight from '$lib/demo_assets/demo_light.webp?enhanced';
 	import DemoVideo from '$lib/demo_assets/demo_video.webm';
 
-	$: demoTheme = $mode === 'dark';
+	let demoTheme;
+	run(() => {
+		demoTheme = $mode === 'dark';
+	});
 
 	onMount(() => {
 		document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
@@ -31,7 +36,6 @@
 </script>
 
 <div class="app">
-	<Particles />
 	<div class="fixed right-0 top-0">
 		<ToggleTheme />
 	</div>
@@ -40,7 +44,7 @@
 			size="icon"
 			variant="link"
 			class="text-white hover:bg-muted"
-			href="https://github.com/Tsuzat/kanban"
+			href="https://github.com/jonellwood/kanban_new"
 			target="_blank"
 		>
 			<GitHub class="size-5" />
@@ -53,10 +57,10 @@
 	>
 		<Logo size={4} />
 		<div class="between-lines">Introducing</div>
-		<div class="title text-7xl sm:text-8xl font-extrabold text-center">Kanban</div>
+		<div class="title text-7xl sm:text-8xl font-extrabold text-center">Jonbon</div>
 		<div>
 			<div class="text-3xl font-extrabold text-center my-2 sm:my-4 text-popover-foreground">
-				An Effortless Kanban Boards
+				Effortless Kanban Boards
 			</div>
 			<div class="text-center text-muted-foreground">
 				Streamline your workflow with suckless, minimal, powerful and feature rich kanban board app.
@@ -64,15 +68,17 @@
 			</div>
 		</div>
 		<div class="flex items-center">
-			<GlowingButton>
+			<!-- <GlowingButton>
 				<Button variant="outline" class="z-20 relative" href="#features">Explore Features</Button>
+			</GlowingButton> -->
+			<GlowingButton>
+				<Button variant="outline" class="z-20 relative" href="/boards"
+					>Get Started <MoveRight class="ml-2" /></Button
+				>
 			</GlowingButton>
-			<Button class="group text-white ml-4" href="/boards"
-				>Get Started <MoveRight class="ml-2" /></Button
-			>
 		</div>
 	</section>
-	<section
+	<!-- <section
 		class="min-h-[calc(100dvh)] w-[90%] flex flex-col items-center justify-around sm:w-[55%] m-auto py-4"
 		id="features"
 	>
@@ -93,7 +99,7 @@
 					>
 						<Card.Header>
 							<Card.Title class="flex items-center">
-								<svelte:component this={feature.icon} class="mr-4" />
+								<feature.icon class="mr-4" />
 								<span>{feature.name}</span>
 							</Card.Title>
 							<Card.Description class="text-start">{feature.description}</Card.Description>
@@ -103,8 +109,8 @@
 				</div>
 			{/each}
 		</div>
-	</section>
-	<section class="w-[90%] sm:w-[55%] m-auto py-4" id="demo">
+	</section> -->
+	<!-- <section class="w-[90%] sm:w-[55%] m-auto py-4" id="demo">
 		<div class="between-lines my-8">Demo</div>
 		<div class="text-xl font-extrabold text-center text-muted-foreground my-8">
 			A simple screenshot of the PWA (Progressive Web App)
@@ -137,9 +143,11 @@
 				<track kind="captions" />
 			</video>
 		</div>
-	</section>
+	</section> -->
 	<div class="text-center text-sm">
-		Made with ❤️ by <a class="text-primary" href="https://tsuzat.com" target="_blank">Tsuzat</a>
+		Made with 🧠 by <a class="text-primary" href="https://jonellwood.dev" target="_blank"
+			>Jon Ellwood</a
+		>
 	</div>
 </div>
 

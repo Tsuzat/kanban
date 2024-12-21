@@ -4,10 +4,16 @@
 
 	type $$Props = SelectPrimitive.LabelProps;
 
-	let className: $$Props["class"] = undefined;
-	export { className as class };
+	interface Props {
+		class?: $$Props["class"];
+		children?: import('svelte').Snippet;
+		[key: string]: any
+	}
+
+	let { class: className = undefined, children, ...rest }: Props = $props();
+	
 </script>
 
-<SelectPrimitive.Label class={cn("px-2 py-1.5 text-sm font-semibold", className)} {...$$restProps}>
-	<slot />
+<SelectPrimitive.Label class={cn("px-2 py-1.5 text-sm font-semibold", className)} {...rest}>
+	{@render children?.()}
 </SelectPrimitive.Label>

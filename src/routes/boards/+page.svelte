@@ -11,11 +11,11 @@
 
 	// Global PopUp Related
 	let openGlobalPopUp = writable(false);
-	let alertTitle = '';
-	let alertDescription = '';
-	let continueText = '';
-	let isDestructive = false;
-	let onClick = () => {};
+	let alertTitle = $state('');
+	let alertDescription = $state('');
+	let continueText = $state('');
+	let isDestructive = $state(false);
+	let onClick = $state(() => {});
 </script>
 
 <svelte:head>

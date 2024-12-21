@@ -10,11 +10,15 @@
 	import { createNewKanban, generateKanbanId } from '$lib/localStore/utils';
 	import type { Kanban, Section } from '$lib/localStore/types';
 
-	export let open: Writable<boolean>;
+	interface Props {
+		open: Writable<boolean>;
+	}
+
+	let { open }: Props = $props();
 
 	// Variables for new project
-	let title = 'Untitled';
-	let icon = 'folder';
+	let title = $state('Untitled');
+	let icon = $state('folder');
 
 	let icons: string[] = [];
 
@@ -46,6 +50,7 @@
 				Fill All the information and click submit when you're done.
 			</Dialog.Description>
 		</Dialog.Header>
+		{@const SvelteComponent = project_icons[icon]}
 		<div class="grid gap-4 py-4">
 			<div class="grid grid-cols-4 items-center gap-4">
 				<Label for="name" class="text-right">Title</Label>
@@ -53,7 +58,7 @@
 			</div>
 			<div class="grid grid-cols-4 items-center gap-4">
 				<Label for="Icon" class="text-right">Icon</Label>
-				<svelte:component this={project_icons[icon]} class="size-4" />
+				<SvelteComponent class="size-4" />
 				<Select.Root>
 					<Select.Trigger class="w-[10rem]">
 						<Select.Value placeholder="Select Icon" />
@@ -67,7 +72,8 @@
 								value={icn}
 								label={icn}
 							>
-								<svelte:component this={project_icons[icn]} class="size-4" />
+								{@const SvelteComponent_1 = project_icons[icn]}
+								<SvelteComponent_1 class="size-4" />
 							</Select.Item>
 						{/each}
 					</Select.Content>
